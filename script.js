@@ -358,7 +358,7 @@ async function getXmacisData(site, monthly) {
 		elems[0].smry = "sum";
 		elems[0].smry_only = "1";
 	}
-	const url = "http://data.rcc-acis.org/StnData";
+	const url = "https://data.rcc-acis.org/StnData";
 	const params = {
 		sid: site,
 		sdate: dates[0],
