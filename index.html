@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Monsoon Mockup</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="shortcut icon" href="./img/150px-NOAA-Logo.png" type="image/x-icon" />
+	</head>
+	<body>
+		<div class="nws-container">
+			<img style="width: 100%" src="./img/nws-header.png" alt="header" />
+			<div id="pagebody">
+				<!-- Here's what actually matters -->
+				<nav>
+					<button class="button-30" id="seasonOverviewBtn" role="button">
+						Current Season Overview
+					</button>
+					<button class="button-30" id="monsoonStatsBtn" role="button">Monsoon Stats</button>
+					<button class="button-30" id="monsoonEdBtn" role="button">Monsoon Education</button>
+					<a
+						href="https://cals.arizona.edu/climate/misc/SWMonsoonMaps/current/swus_monsoon.html"
+						class="button-30"
+						role="button"
+						target="_blank"
+						rel="noopener noreferrer"
+						>Detailed Precip Maps (CLIMAS)</a
+					>
+				</nav>
+				<div class="displays" id="seasonOverview">
+					<h2>Current Season Overview</h2>
+					<!-- Dew point chart -->
+					<div class="dewpoint-chart">
+						<div class="card chart-container">
+							<canvas id="myChart"></canvas>
+						</div>
+						<div class="flex flex-column flex-grow">
+							<div>
+								<div>Select Site:</div>
+								<select name="site" id="selectSite">
+									<option selected value="ktus">Tucson Airport</option>
+									<option value="kflg">Flagstaff Airport</option>
+									<option value="knyl">Yuma Airport</option>
+									<option value="kphx">Phoenix Sky Harbor</option>
+									<option value="kelp">El Paso Airport</option>
+									<option value="kabq">Albuquerque Airport</option>
+								</select>
+							</div>
+							<div class="chart-controls">
+								<p>Readout:</p>
+								<p><em>Hover Over Point</em></p>
+								<br />
+								<p>Zoom:</p>
+								<p>
+									<em>CTRL + Mouse Wheel or <br />Left-Click & Drag</em>
+								</p>
+								<br />
+								<p>Pan:</p>
+								<p><em>ALT + Left-Click & Drag</em></p>
+							</div>
+						</div>
+					</div>
+					<br />
+
+					<!-- Bar Charts -->
+					<div class="precip-chart">
+						<div class="card">
+							<div class="chart-container-2">
+								<canvas id="barChart"></canvas>
+							</div>
+							<div class="chart-container-2">
+								<canvas id="lineChart"></canvas>
+							</div>
+						</div>
+						<div class="flex flex-column flex-grow">
+							<div>
+								<div>Select Site:</div>
+								<select id="selectSitePrecip">
+									<option selected value="0">Tucson Airport</option>
+									<option value="1">Nogales Airport</option>
+									<option value="2">Safford Airport</option>
+									<option value="3">Sierra Vista</option>
+									<option value="4">Willcox</option>
+									<option value="5">Picacho Peak</option>
+									<option value="6">Ajo</option>
+								</select>
+							</div>
+							<div class="chart-controls">
+								<p>Readout:</p>
+								<p><em>Hover Over Chart</em></p>
+								<br />
+								<div id="lastUpdate"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="displays d-none" id="monsoonStats">
+					<h2>Monsoon Statistics</h2>
+					<div class="flex flex-align-center mb-20">
+						<div class="mr-10">Select Site:</div>
+						<select id="monsoonStatsSite" style="width: 300px" class="mr-10">
+							<option selected value="ktus">Tucson Airport</option>
+							<option value="kflg">Flagstaff Airport</option>
+							<option value="knyl">Yuma Airport</option>
+							<option value="kphx">Phoenix Sky Harbor</option>
+							<option value="kabq">Albuquerque Airport</option>
+							<option value="klas">Las Vegas Airport</option>
+							<option value="kigm">Kingman Airport</option>
+						</select>
+						<a id="haywoodLink" href="#haywoodPlot">Tucson Haywood Plot</a>
+					</div>
+					<div class="mb-10 text-center" id="monsoonStatsPor"></div>
+					<table id="precipTop10"></table>
+					<div class="mb-10 text-center">
+						<b>Rainfall by Month *Preliminary for Current Year*</b>
+					</div>
+					<div id="precipTable"></div>
+					<img id="haywoodPlot" src="./img/tucson-haywood.png" alt="Tucson Haywood Plot" />
+				</div>
+				<div class="displays d-none" id="monsoonEd">
+					<h2>Monsoon Education</h2>
+					<div class="flex flex-align-center mb-20">
+						<div class="mr-10">Select a topic:</div>
+						<select class="mr-10" id="monsoonEdSelect" style="width: 300px">
+							<option selected value="monsoonWhatIs">What Is A Monsoon?</option>
+							<option value="NAMonsoon">North American Monsoon</option>
+							<option value="gulfSurge">Gulf Surge</option>
+							<option value="monsoonProg">Monsoon Progression</option>
+							<option value="monsoonVar">Inter-Annual Variability</option>
+							<option value="monsoonPat">Severe Thunderstorm/Flash Flood Patterns</option>
+							<option value="monsoonLows">Monsoon Upper-Level Lows</option>
+							<option value="monsoonSafety">Monsoon Safety</option>
+							<option value="monsoonRef">For More Reading</option>
+						</select>
+						<div>
+							Trouble viewing?
+							<a
+								href="https://www.weather.gov/twc/MonsoonInfo"
+								target="_blank"
+								rel="noopener noreferrer"
+								>See HTML Version</a
+							>
+						</div>
+					</div>
+					<div style="width: 100%; height: 100vh">
+						<embed
+							id="monsoonEdPDF"
+							src="./pdfs/monsoonWhatIs.pdf"
+							type="application/pdf"
+							width="100%"
+							height="100%"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js"
+			integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
+			integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.1.1/chartjs-plugin-zoom.min.js"
+			integrity="sha512-NxlWEbNbTV6acWnTsWRLIiwzOw0IwHQOYUCKBiu/NqZ+5jSy7gjMbpYI+/4KvaNuZ1qolbw+Vnd76pbIUYEG8g=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+		<script src="./script.js"></script>
+	</body>
+</html>

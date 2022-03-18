@@ -1,0 +1,295 @@
+:root {
+	/* --button-bg: rgb(20, 88, 150);
+	--button-bg-dark: rgb(12, 70, 124);
+	--button-color: #fcfcfd; */
+	--button-bg: #fcfcfd;
+	--button-bg-dark: #d6d6e7;
+	--button-color: #36395a;
+}
+
+body {
+	background: #c5e5f5;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#pagebody ol {
+	padding-left: 0;
+	list-style-position: inside;
+}
+
+#pagebody li {
+	margin: 0 0 10px 0;
+}
+
+#pagebody select {
+	border: 1px solid #ccc;
+	border-radius: 7px;
+	padding: 5px;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#pagebody select:hover {
+	cursor: pointer;
+}
+
+#pagebody select:focus {
+	outline: 1px solid #c5e5f5;
+}
+
+#pagebody img {
+	width: 100%;
+}
+
+#pagebody {
+	width: 100%;
+	box-sizing: border-box;
+	float: none;
+	/* padding is normall just 10 for this container */
+	padding: 0 25px 25px 25px;
+	color: var(--button-color);
+}
+
+#pagebody nav {
+	display: flex;
+	justify-content: space-between;
+	margin: 10px 0;
+}
+
+#pagebody h2 {
+	font-weight: 400;
+	border-bottom: 1px solid #d6d6e7;
+	margin: 30px 0;
+}
+
+#pagebody table {
+	table-layout: fixed;
+	width: 80%;
+	border-collapse: collapse;
+	margin: 0 auto 20px auto;
+	font-size: 12px;
+}
+
+#pagebody table td {
+	padding: 5px;
+	text-align: center;
+	border: 1px solid #ccc;
+}
+
+#pagebody table th {
+	padding: 5px;
+	border: 1px solid #ccc;
+	background: #c5e5f5;
+}
+
+#pagebody table tr:nth-child(even) {
+	background: #eee;
+}
+
+#pagebody .m-10 {
+	margin: 10px;
+}
+
+/* for chart */
+#pagebody p {
+	margin: 0;
+}
+
+#pagebody .d-none {
+	display: none;
+}
+
+#pagebody #precipTable {
+	min-height: 100vh;
+}
+
+.chart-container {
+	height: 500px;
+	width: 700px;
+}
+
+.chart-container-2 {
+	height: 350px;
+	width: 700px;
+}
+
+.w-full {
+	width: 100%;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.mt-10 {
+	margin-top: 10px;
+}
+
+.mt-20 {
+	margin-top: 20px;
+}
+
+.mr-10 {
+	margin-right: 10px;
+}
+
+.m-0 {
+	margin: 0;
+}
+
+.mb-10 {
+	margin-bottom: 10px;
+}
+
+.mb-20 {
+	margin-bottom: 20px;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-grow {
+	flex-grow: 1;
+}
+
+.flex-center {
+	justify-content: center;
+	align-items: center;
+}
+
+.flex-align-center {
+	align-items: center;
+}
+
+.flex-column {
+	flex-direction: column;
+}
+
+.flex-between {
+	justify-content: space-between;
+}
+
+.float-right {
+	float: right;
+}
+
+.chart-controls {
+	border: 1px solid #ccc;
+	border-radius: 7px;
+	padding: 10px;
+	margin-top: 20px;
+}
+
+.card {
+	border: 1px solid #ccc;
+	border-radius: 7px;
+	padding: 10px;
+}
+
+.dewpoint-chart {
+	display: flex;
+	/* align-items: center; */
+	justify-content: space-between;
+	gap: 20px;
+	margin: 20px 0;
+}
+
+.precip-chart {
+	display: flex;
+	/* align-items: center; */
+	justify-content: space-between;
+	gap: 20px;
+	margin: 20px 0;
+}
+
+#sidebar {
+	display: none;
+}
+
+.top-stats-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+}
+
+.nws-container {
+	width: 990px;
+	background: #fff;
+	margin: 0 auto;
+	/* padding: 0 20px; */
+}
+
+.button-30 {
+	align-items: center;
+	appearance: none;
+	background-color: var(--button-bg);
+	border-radius: 4px;
+	border-width: 0;
+	box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+		var(--button-bg-dark) 0 -3px 0 inset;
+	box-sizing: border-box;
+	color: var(--button-color);
+	cursor: pointer;
+	display: inline-flex;
+	height: 48px;
+	justify-content: center;
+	line-height: 1;
+	list-style: none;
+	overflow: hidden;
+	padding-left: 16px;
+	padding-right: 16px;
+	position: relative;
+	text-align: left;
+	text-decoration: none;
+	transition: box-shadow 0.15s, transform 0.15s;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	white-space: nowrap;
+	will-change: box-shadow, transform;
+	font-size: 18px;
+}
+
+.button-30:focus {
+	box-shadow: var(--button-bg-dark) 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px,
+		rgba(45, 35, 66, 0.3) 0 7px 13px -3px, var(--button-bg-dark) 0 -3px 0 inset;
+}
+
+.button-30:hover {
+	box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+		var(--button-bg-dark) 0 -3px 0 inset;
+	transform: translateY(-2px);
+}
+
+.button-30:active {
+	box-shadow: var(--button-bg-dark) 0 3px 7px inset;
+	transform: translateY(2px);
+}
+
+/* Old css from monsoon rainfall page */
+#siteSelector {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 25px 0;
+	justify-content: space-around;
+	font-size: 14px;
+}
+
+#siteSelector div {
+	padding: 10px;
+	color: #666;
+	border-radius: 0.5rem;
+}
+
+#siteSelector div:hover {
+	background: #537791;
+	color: #fff;
+	cursor: pointer;
+}
+
+#siteSelector .active {
+	background: #537791;
+	color: #fff;
+}
