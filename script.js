@@ -19,6 +19,11 @@ const precipTable = document.querySelector("#precipTable");
 const precipTop10 = document.querySelector("#precipTop10");
 const haywoodLink = document.querySelector("#haywoodLink");
 const haywoodPlot = document.querySelector("#haywoodPlot");
+const precipMaps = document.querySelector("#precipMaps");
+const precipMapsBtn = document.querySelector("#precipMapsBtn");
+const dewpointYear = document.querySelector("#dewpointYear");
+const precipYear = document.querySelector("#precipYear");
+const precipRegion = document.querySelector("#precipRegion");
 
 let avgDewpoints = {};
 fetch("./json/avg-dewpoints.json")
@@ -29,6 +34,11 @@ fetch("./json/avg-dewpoints.json")
 monsoonEdBtn.addEventListener("click", () => adjustDisplay("monsoonEd"));
 seasonOverviewBtn.addEventListener("click", () => adjustDisplay("seasonOverview"));
 monsoonStatsBtn.addEventListener("click", () => adjustDisplay("monsoonStats"));
+precipMapsBtn.addEventListener("click", () => adjustDisplay("precipMaps"));
+
+// setup years for dew point and precip selectors
+fillYears(dewpointYear, 2017);
+fillYears(precipYear, 1975);
 
 // apply/remove d-none to displays depending on what was selected
 function adjustDisplay(selected) {
@@ -63,12 +73,8 @@ const plugin = {
 	beforeDraw: (chart) => {
 		if (bgImage.complete) {
 			const ctx = chart.ctx;
-			// const { top, left, width, height } = chart.chartArea;
-			// const x = width - 10;
-			// const x = left + width - bgImage2.width - 10;
-			// const y = top + height / 2 - bgImage.height / 2;
 			ctx.drawImage(bgImage, 10, 10, 50, 50);
-			ctx.drawImage(bgImage2, 640, 10, 50, 50);
+			ctx.drawImage(bgImage2, 645, 10, 50, 50);
 		} else {
 			bgImage.onload = () => chart.draw();
 		}
@@ -142,13 +148,16 @@ const dewpointChart = new Chart(ctx, {
 });
 
 selectSite.addEventListener("change", () => getData());
+dewpointYear.addEventListener("change", () => getData());
 
 // get data from synoptic data
 getData();
 
 function getData() {
+	const selectedYear = dewpointYear.value;
+	// dates begin one hour before the start of the season
 	fetch(
-		`https://api.synopticdata.com/v2/stations/timeseries?stid=${selectSite.value}&start=202106150700&end=202110010700&units=english&hfmetars=0&vars=dew_point_temperature&obtimezone=local&token=e56e04d76bad41229d6c0f7076d54d59`
+		`https://api.synopticdata.com/v2/stations/timeseries?stid=${selectSite.value}&start=${selectedYear}06150600&end=${selectedYear}10010700&units=english&hfmetars=0&vars=dew_point_temperature&obtimezone=local&token=e56e04d76bad41229d6c0f7076d54d59`
 	)
 		.then((res) => res.json())
 		.then((data) => {
@@ -528,7 +537,7 @@ function changeDailyPrecipData(site) {
 	// update chart labels and data
 	buildLineChart.data.labels = precipData.date;
 	buildLineChart.data.datasets[0].data = dailyPrecip(site, "actualPrecip");
-	console.log(dailyPrecip(site, "actualPrecip"));
+	// console.log(dailyPrecip(site, "actualPrecip"));
 	buildLineChart.data.datasets[1].data = dailyPrecip(site, "normalPrecip");
 	buildLineChart.options.plugins.title.text = `Monsoon Rainfall for ${
 		selectSitePrecip.options[selectSitePrecip.selectedIndex].text
@@ -596,37 +605,6 @@ const buildChart = () => {
 					},
 				],
 			},
-			// needed to add graph values and remove hover
-			// events: false,
-			// tooltips: {
-			// 	enabled: false,
-			// },
-			// hover: {
-			// 	animationDuration: 0,
-			// },
-			// animation: {
-			// 	duration: 1,
-			// 	onComplete: function () {
-			// 		var chartInstance = this.chart,
-			// 			ctx = chartInstance.ctx;
-			// 		ctx.font = Chart.helpers.fontString(
-			// 			Chart.defaults.global.defaultFontSize,
-			// 			Chart.defaults.global.defaultFontStyle,
-			// 			Chart.defaults.global.defaultFontFamily
-			// 		);
-			// 		ctx.textAlign = "center";
-			// 		ctx.textBaseline = "bottom";
-
-			// 		this.data.datasets.forEach(function (dataset, i) {
-			// 			var meta = chartInstance.controller.getDatasetMeta(i);
-			// 			meta.data.forEach(function (bar, index) {
-			// 				var data = dataset.data[index];
-			// 				ctx.fillText(data, bar._model.x, bar._model.y - 5);
-			// 			});
-			// 		});
-			// 	},
-			// },
-			// done with additions
 		},
 	});
 };
@@ -692,3 +670,52 @@ const buildLineChart = new Chart(lineChart, {
 		},
 	},
 });
+
+// populates years inside the select element dating back to a start year
+function fillYears(selectEl, startYear) {
+	let endYear = hasSeasonStarted();
+	for (let i = endYear; i >= startYear; i--) {
+		const option = document.createElement("option");
+		option.value = i;
+		option.textContent = i;
+		selectEl.append(option);
+	}
+}
+
+// checkes to see if the monsoon season has started, otherwise show last year
+function hasSeasonStarted() {
+	const currentDate = new Date();
+	let endYear = currentDate.getFullYear();
+	if (currentDate < new Date(`June 16, ${endYear}`)) {
+		endYear -= 1;
+	}
+	return endYear;
+}
+
+// fetch precip from xmacis based on sites and date range
+// will return array of each site's climate data
+// inside that is another array with actual and normal precip
+async function fetchXmacisPrecip(sites) {
+	const urlBase = "https://data.rcc-acis.org/MultiStnData";
+	const elements = {
+		sids: "KTUS,KOLS,KSAD,SEVA3",
+		sdate: "2020-06-15",
+		edate: "2020-06-30",
+		elems: [
+			{
+				name: "pcpn",
+				duration: "dly",
+				smry: "sum",
+			},
+			{
+				name: "pcpn",
+				duration: "dly",
+				smry: "sum",
+				normal: "1",
+			},
+		],
+	};
+	const response = await fetch(`${urlBase}?params=${JSON.stringify(elements)}`);
+	const json = await response.json();
+	console.log(json);
+}

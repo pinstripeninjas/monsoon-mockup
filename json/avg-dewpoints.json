@@ -4612,5 +4612,43 @@
 			},
 			"por": "1901-2021"
 		}
+	},
+	"regionalSitesList": {
+		"seaz": [
+			{
+				"site": "ktus",
+				"name": "Tucson Airport"
+			},
+			{
+				"site": "kols",
+				"name": "Nogales Airport"
+			},
+			{
+				"site": "ksad",
+				"name": "Safford Aiport"
+			},
+			{
+				"site": "seva3",
+				"name": "Sierra Vista"
+			},
+			{
+				"site": "ospa3",
+				"name": "Oracle"
+			},
+			{
+				"site": "wila3",
+				"name": "Willcox"
+			},
+			{
+				"site": "pica3",
+				"name": "Picacho Peak"
+			},
+			{
+				"site": "ajo3",
+				"name": "Ajo"
+			}
+		],
+		"cenaz": ["kphx"],
+		"noaz": []
 	}
 }

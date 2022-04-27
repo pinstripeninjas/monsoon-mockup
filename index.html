@@ -17,16 +17,18 @@
 					<button class="button-30" id="seasonOverviewBtn" role="button">
 						Current Season Overview
 					</button>
-					<button class="button-30" id="monsoonStatsBtn" role="button">Monsoon Stats</button>
-					<button class="button-30" id="monsoonEdBtn" role="button">Monsoon Education</button>
-					<a
+					<button
 						href="https://cals.arizona.edu/climate/misc/SWMonsoonMaps/current/swus_monsoon.html"
 						class="button-30"
 						role="button"
 						target="_blank"
 						rel="noopener noreferrer"
-						>Detailed Precip Maps (CLIMAS)</a
+						id="precipMapsBtn"
 					>
+						Detailed Precip Maps
+					</button>
+					<button class="button-30" id="monsoonStatsBtn" role="button">Monsoon Stats</button>
+					<button class="button-30" id="monsoonEdBtn" role="button">Monsoon Education</button>
 				</nav>
 				<div class="displays" id="seasonOverview">
 					<h2>Current Season Overview</h2>
@@ -46,6 +48,10 @@
 									<option value="kelp">El Paso Airport</option>
 									<option value="kabq">Albuquerque Airport</option>
 								</select>
+							</div>
+							<div>
+								<div class="mt-20">Select Year:</div>
+								<select name="dewpointYear" id="dewpointYear"></select>
 							</div>
 							<div class="chart-controls">
 								<p>Readout:</p>
@@ -75,7 +81,15 @@
 						</div>
 						<div class="flex flex-column flex-grow">
 							<div>
-								<div>Select Site:</div>
+								<div>Select Region:</div>
+								<select name="precipRegion" id="precipRegion">
+									<option selected value="seaz">Southeast Arizona</option>
+									<option value="cenaz">Central Arizona</option>
+									<option value="noaz">Northern Arizona</option>
+								</select>
+							</div>
+							<div>
+								<div class="mt-20">Select Site:</div>
 								<select id="selectSitePrecip">
 									<option selected value="0">Tucson Airport</option>
 									<option value="1">Nogales Airport</option>
@@ -85,6 +99,10 @@
 									<option value="5">Picacho Peak</option>
 									<option value="6">Ajo</option>
 								</select>
+							</div>
+							<div>
+								<div class="mt-20">Select Year:</div>
+								<select name="precipYear" id="precipYear"></select>
 							</div>
 							<div class="chart-controls">
 								<p>Readout:</p>
@@ -152,6 +170,30 @@
 							height="100%"
 						/>
 					</div>
+				</div>
+				<div class="displays d-none" id="precipMaps">
+					<h2>Detailed Precip Maps</h2>
+					<div class="precipMapsContainer">
+						<div>
+							<h4 class="precipTitle">Total Monsoon Precipitation</h4>
+							<a href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_TotalPrecip.png">
+								<img
+									src="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_TotalPrecip.png"
+									alt="total-monsoon-precipitation"
+								/>
+							</a>
+						</div>
+						<div>
+							<h4 class="precipTitle">Precent of Average Monsoon Precipitation</h4>
+							<a href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_PercPrecip.png">
+								<img
+									src="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_PercPrecip.png"
+									alt="percent-of-average-monsoon-precipitation"
+								/>
+							</a>
+						</div>
+					</div>
+					<a href="https://cals.arizona.edu/climate/misc/monsoon/az_monsoon.html">CLIMAS</a>
 				</div>
 			</div>
 		</div>

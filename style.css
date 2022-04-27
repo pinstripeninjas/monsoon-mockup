@@ -1,7 +1,4 @@
 :root {
-	/* --button-bg: rgb(20, 88, 150);
-	--button-bg-dark: rgb(12, 70, 124);
-	--button-color: #fcfcfd; */
 	--button-bg: #fcfcfd;
 	--button-bg-dark: #d6d6e7;
 	--button-color: #36395a;
@@ -53,7 +50,7 @@ body {
 
 #pagebody nav {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
 	margin: 10px 0;
 }
 
@@ -292,4 +289,22 @@ body {
 #siteSelector .active {
 	background: #537791;
 	color: #fff;
+}
+
+.precipMapsContainer {
+	margin-top: 20px;
+	display: grid;
+	grid-template-columns: 50% 50%;
+	gap: 10px;
+}
+
+#precipMaps img {
+	width: 100%;
+}
+
+.precipTitle {
+	text-align: center;
+	margin: 0 0 10px 0;
+	font-size: 16px;
+	text-decoration: underline;
 }
