@@ -28,7 +28,10 @@ const precipRegion = document.querySelector("#precipRegion");
 let avgDewpoints = {};
 fetch("./json/avg-dewpoints.json")
 	.then((res) => res.json())
-	.then((data) => (avgDewpoints = data));
+	.then((data) => {
+		avgDewpoints = data;
+		getPrecipData(precipRegion.value);
+	});
 
 // change to update displays
 monsoonEdBtn.addEventListener("click", () => adjustDisplay("monsoonEd"));
@@ -436,42 +439,33 @@ let normalPrecip = [];
 // const currentYear = new Date().getFullYear();
 const currentYear = "2021";
 
-getPrecipData();
-
 // "https://extendsclass.com/api/json-storage/bin/addceda"
 // "../../images/twc/monsoonPCP/2020PCP.json"
 
 // Gets JSON data via Axios and populates precip variables, then builds chart
-async function getPrecipData() {
-	// const fetchNormals = await fetch("../../images/twc/monsoonPCP/1991-2020normals.json");
-	const fetchNormals = await fetch("./json/1991-2020normals.json");
-	normalData = await fetchNormals.json();
-	// const fetchData = await fetch(`../../images/twc/monsoonPCP/${currentYear}PCP.json`);
-	const fetchData = await fetch("./json/2021PCP.json");
-	precipData = await fetchData.json();
+async function getPrecipData(region) {
+	const precipData = await fetchXmacisPrecip(precipRegion.value);
 	console.log(precipData);
-	fillPrecipData();
-	buildChart();
-	changeDailyPrecipData(0);
-	getLastUpdate();
-}
-
-// fill arrays with stuff
-const fillPrecipData = () => {
-	sites = buildSites(precipData.data);
-	actualPrecip = buildPrecip(precipData.data, "actualPrecip");
-	normalPrecip = buildPrecip(normalData, "normalPrecip");
-	//normalPrecip = buildNormals(normalData);
-};
-
-// Builds the list of sites as an array
-const buildSites = (precipData) => {
 	const sites = [];
-	for (let site of precipData) {
+	const actualPrecipTotal = [];
+	const actualPrecipDaily = [];
+	const normalPrecipTotal = [];
+	// fill sites
+	for (let site of avgDewpoints.regionalSitesList[region]) {
 		sites.push(site.name);
 	}
-	return sites;
-};
+	// fill arrays
+	for (let site of precipData) {
+		actualPrecipTotal.push(site.smry[0]);
+		normalPrecipTotal.push(site.smry[1]);
+	}
+	//fillPrecipData();
+	//buildBarChart();
+	updateTotalPrecipData(sites, actualPrecipTotal, normalPrecipTotal);
+	changeDailyPrecipData(0);
+	getLastUpdate();
+	return { sites, actualPrecipTotal, normalPrecipTotal };
+}
 
 // Builds both the actual and normal precip arrays
 const buildPrecip = (data, precipType) => {
@@ -545,6 +539,14 @@ function changeDailyPrecipData(site) {
 	buildLineChart.update();
 }
 
+function updateTotalPrecipData(sites, actual, normal) {
+	// update chart labels and data
+	buildBarChart.data.labels = sites;
+	buildBarChart.data.datasets[0].data = actual;
+	buildBarChart.data.datasets[1].data = normal;
+	buildBarChart.update();
+}
+
 // publishes latest update to graphs
 function getLastUpdate() {
 	lastUpdate.innerHTML = "*** Will Begin After June 15th ***";
@@ -556,58 +558,56 @@ function getLastUpdate() {
 }
 
 // uses chart JS to build total precip chart
-const buildChart = () => {
-	const chart = new Chart(barChart, {
-		type: "bar",
-		data: {
-			labels: sites,
-			datasets: [
-				{
-					label: "Actual Rainfall",
-					backgroundColor: precipColor1,
-					borderColor: precipColor1,
-					data: actualPrecip,
+const buildBarChart = new Chart(barChart, {
+	type: "bar",
+	data: {
+		labels: [],
+		datasets: [
+			{
+				label: "Actual Rainfall",
+				backgroundColor: precipColor1,
+				borderColor: precipColor1,
+				data: [],
+			},
+			{
+				label: "Normal Rainfall (1991-2020)",
+				backgroundColor: precipColor2,
+				borderColor: precipColor2,
+				data: [],
+			},
+		],
+	},
+
+	// Configuration options go here
+	options: {
+		maintainAspectRatio: false,
+		plugins: {
+			title: {
+				display: true,
+				text: `${precipYear.value} Monsoon Rainfall vs. Normal`,
+				font: {
+					size: 22,
 				},
+			},
+		},
+		scales: {
+			yAxes: [
 				{
-					label: "Normal Rainfall",
-					backgroundColor: precipColor2,
-					borderColor: precipColor2,
-					data: normalPrecip,
+					scaleLabel: {
+						display: true,
+						labelString: "Rainfall (inches)",
+						fontSize: 14,
+					},
+					// offset: true,
+					ticks: {
+						precision: 2,
+						beginAtZero: true,
+					},
 				},
 			],
 		},
-
-		// Configuration options go here
-		options: {
-			maintainAspectRatio: false,
-			plugins: {
-				title: {
-					display: true,
-					text: `${currentYear} Monsoon Rainfall vs. Normal`,
-					font: {
-						size: 22,
-					},
-				},
-			},
-			scales: {
-				yAxes: [
-					{
-						scaleLabel: {
-							display: true,
-							labelString: "Rainfall (inches)",
-							fontSize: 14,
-						},
-						// offset: true,
-						ticks: {
-							precision: 2,
-							beginAtZero: true,
-						},
-					},
-				],
-			},
-		},
-	});
-};
+	},
+});
 
 // Builds line graph for daily rainfall data vs normal
 const buildLineChart = new Chart(lineChart, {
@@ -695,12 +695,17 @@ function hasSeasonStarted() {
 // fetch precip from xmacis based on sites and date range
 // will return array of each site's climate data
 // inside that is another array with actual and normal precip
-async function fetchXmacisPrecip(sites) {
+async function fetchXmacisPrecip(selectedRegion) {
+	const sitesArray = [];
+	for (let site of avgDewpoints.regionalSitesList[selectedRegion]) {
+		sitesArray.push(site.site);
+	}
+	const selectedYear = precipYear.value;
 	const urlBase = "https://data.rcc-acis.org/MultiStnData";
 	const elements = {
-		sids: "KTUS,KOLS,KSAD,SEVA3",
-		sdate: "2020-06-15",
-		edate: "2020-06-30",
+		sids: sitesArray.toString(),
+		sdate: `${selectedYear}-06-15`,
+		edate: `${selectedYear}-09-30`,
 		elems: [
 			{
 				name: "pcpn",
@@ -717,5 +722,15 @@ async function fetchXmacisPrecip(sites) {
 	};
 	const response = await fetch(`${urlBase}?params=${JSON.stringify(elements)}`);
 	const json = await response.json();
-	console.log(json);
+	return json.data;
 }
+
+// updates precip bar and line chanrts when changing year
+precipYear.addEventListener("change", () => {
+	getPrecipData(precipRegion.value);
+});
+
+// updates precip bar and line chanrts when changing region
+precipRegion.addEventListener("change", () => {
+	getPrecipData(precipRegion.value);
+});

@@ -4617,15 +4617,15 @@
 		"seaz": [
 			{
 				"site": "ktus",
-				"name": "Tucson Airport"
+				"name": "Tucson"
 			},
 			{
 				"site": "kols",
-				"name": "Nogales Airport"
+				"name": "Nogales"
 			},
 			{
 				"site": "ksad",
-				"name": "Safford Aiport"
+				"name": "Safford"
 			},
 			{
 				"site": "seva3",
@@ -4644,11 +4644,61 @@
 				"name": "Picacho Peak"
 			},
 			{
-				"site": "ajo3",
+				"site": "ajoa3",
 				"name": "Ajo"
 			}
 		],
-		"cenaz": ["kphx"],
-		"noaz": []
+		"cenaz": [
+			{
+				"site": "kphx",
+				"name": "Phoenix"
+			},
+			{
+				"site": "glba3",
+				"name": "Gila Bend"
+			},
+			{
+				"site": "quaa3",
+				"name": "Quartzsite"
+			},
+			{
+				"site": "apna3",
+				"name": "Apache Junction"
+			},
+			{
+				"site": "glea3",
+				"name": "Globe"
+			},
+			{
+				"site": "knyl",
+				"name": "Yuma"
+			}
+		],
+		"noaz": [
+			{
+				"site": "kflg",
+				"name": "Flagstaff"
+			},
+			{
+				"site": "kigm",
+				"name": "Kingman"
+			},
+			{
+				"site": "kpga",
+				"name": "Page"
+			},
+			{
+				"site": "kprc",
+				"name": "Prescott"
+			},
+			{
+				"site": "ksow",
+				"name": "Show Low"
+			},
+			{
+				"site": "kinw",
+				"name": "Winslow"
+			}
+		]
 	}
 }
