@@ -30,7 +30,7 @@ fetch("./json/avg-dewpoints.json")
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
-		getPrecipData(precipRegion.value);
+		getPrecipData.fetchNew(precipRegion.value);
 	});
 
 // change to update displays
@@ -436,90 +436,116 @@ let sites = [];
 let actualPrecip = [];
 let normalPrecip = [];
 
-// const currentYear = new Date().getFullYear();
-const currentYear = "2021";
+// const currentYear = "2021";
 
-// "https://extendsclass.com/api/json-storage/bin/addceda"
 // "../../images/twc/monsoonPCP/2020PCP.json"
 
-// Gets JSON data via Axios and populates precip variables, then builds chart
-async function getPrecipData(region) {
-	const precipData = await fetchXmacisPrecip(precipRegion.value);
-	console.log(precipData);
-	const sites = [];
-	const actualPrecipTotal = [];
-	const actualPrecipDaily = [];
-	const normalPrecipTotal = [];
-	// fill sites
-	for (let site of avgDewpoints.regionalSitesList[region]) {
-		sites.push(site.name);
-	}
-	// fill arrays
-	for (let site of precipData) {
-		actualPrecipTotal.push(site.smry[0]);
-		normalPrecipTotal.push(site.smry[1]);
-	}
-	//fillPrecipData();
-	//buildBarChart();
-	updateTotalPrecipData(sites, actualPrecipTotal, normalPrecipTotal);
-	changeDailyPrecipData(0);
-	getLastUpdate();
-	return { sites, actualPrecipTotal, normalPrecipTotal };
-}
+// try as module pattern
+const getPrecipData = (() => {
+	let sites = [];
+	let dates = [];
+	let actualPrecipTotal = [];
+	let normalPrecipTotal = [];
+	let fullPrecipData = [];
 
-// Builds both the actual and normal precip arrays
-const buildPrecip = (data, precipType) => {
-	const precipArray = [];
-	// if precipType is "normalPrecip", only load to the current date
-	if (precipType === "normalPrecip") {
-		for (let site of data) {
-			let totalPrecipAmount = 0;
-			// get number of days in dataset
-			for (let index in precipData.date) {
-				if (typeof site[precipType][index] === "number") {
-					totalPrecipAmount += site[precipType][index];
+	const setDates = () => {
+		// fill all monsoon dates into array
+		dates = [];
+		let tempDate = new Date("2020-06-15");
+		for (let i = 0; i < 108; i++) {
+			dates.push(tempDate.toISOString().slice(5, 10));
+			tempDate.setDate(tempDate.getDate() + 1);
+		}
+		const year = precipYear.value;
+		const isCurrentYear = year === new Date().getFullYear() ? true : false;
+		// remove array items if current year and during monsoon
+		if (isCurrentYear) {
+			// let endingDate = new Date();
+			const endingDate = new Date();
+			// endingDate.setDate(endingDate.getDate() - 1);
+			for (let [i, date] of dates.entries()) {
+				if (date === endingDate.toISOString().slice(5, 10)) {
+					dates = dates.slice(0, i);
+					break;
 				}
 			}
-			precipArray.push(Number(totalPrecipAmount.toFixed(2)));
 		}
-	} else {
-		for (let site of data) {
-			let totalPrecipAmount = 0;
-			for (let precip of site[precipType]) {
-				if (typeof precip === "number") {
-					totalPrecipAmount += precip;
-				}
-			}
-			precipArray.push(Number(totalPrecipAmount.toFixed(2)));
+	};
+
+	const fetchNew = async (region) => {
+		sites = [];
+		actualPrecipTotal = [];
+		normalPrecipTotal = [];
+		fullPrecipData = [];
+		const precipData = await fetchXmacisPrecip(precipRegion.value);
+		fullPrecipData = precipData;
+		console.log(precipData);
+		// fill sites
+		for (let site of avgDewpoints.regionalSitesList[region]) {
+			sites.push(site.name);
 		}
-	}
-	return precipArray;
-};
+		// fill arrays
+		for (let site of precipData) {
+			actualPrecipTotal.push(site.smry[0]);
+			normalPrecipTotal.push(site.smry[1]);
+		}
+		setDates();
+		build();
+	};
+
+	const getSites = () => {
+		return sites;
+	};
+	const getDates = () => {
+		return dates;
+	};
+	const getactualPrecipTotal = () => {
+		return sites;
+	};
+	const getnormalPrecipTotal = () => {
+		return sites;
+	};
+	const getFullPrecipData = () => {
+		return fullPrecipData;
+	};
+
+	const build = () => {
+		updateTotalPrecipData(sites, actualPrecipTotal, normalPrecipTotal);
+		changeDailyPrecipData(0);
+		getLastUpdate();
+	};
+	return {
+		setDates,
+		getDates,
+		getFullPrecipData,
+		fetchNew,
+		getSites,
+		getactualPrecipTotal,
+		getnormalPrecipTotal,
+	};
+})();
 
 // build daily precip data for line chart
 const dailyPrecip = (site, precipType) => {
+	const fullPrecipArray = getPrecipData.getFullPrecipData();
 	const newPrecipArray = [];
 	let newPrecipTotal = 0;
 	// check if precipType is normalPrecip
 	if (precipType === "normalPrecip") {
-		for (let index in precipData.date) {
-			const currentPrecipAmount = normalData[site][precipType][index];
-			if (typeof currentPrecipAmount === "number") {
-				newPrecipTotal += currentPrecipAmount;
-				newPrecipArray.push(newPrecipTotal);
-			} else {
-				newPrecipArray.push(newPrecipTotal);
+		for (let index in getPrecipData.getDates()) {
+			const currentPrecipAmount = fullPrecipArray[site].data[index][1];
+			if (currentPrecipAmount !== "T" && currentPrecipAmount !== "M") {
+				newPrecipTotal = Number((newPrecipTotal + Number(currentPrecipAmount)).toFixed(2));
 			}
+			newPrecipArray.push(newPrecipTotal);
 		}
 	} else {
-		for (let i = 0; i < precipData.data[site][precipType].length; i++) {
-			const currentPrecipAmount = precipData.data[site][precipType][i];
-			if (typeof currentPrecipAmount === "number") {
-				newPrecipTotal += currentPrecipAmount;
-				newPrecipArray.push(newPrecipTotal);
-			} else {
-				newPrecipArray.push(newPrecipTotal);
+		for (let i = 0; i < getPrecipData.getDates().length; i++) {
+			const currentPrecipAmount = fullPrecipArray[site].data[i][0];
+			if (currentPrecipAmount !== "T" && currentPrecipAmount !== "M") {
+				newPrecipTotal = Number((newPrecipTotal + Number(currentPrecipAmount)).toFixed(2));
 			}
+			newPrecipArray.push(newPrecipTotal);
 		}
 	}
 	return newPrecipArray;
@@ -529,9 +555,8 @@ const dailyPrecip = (site, precipType) => {
 selectSitePrecip.addEventListener("change", (e) => changeDailyPrecipData(e.target.value));
 function changeDailyPrecipData(site) {
 	// update chart labels and data
-	buildLineChart.data.labels = precipData.date;
+	buildLineChart.data.labels = getPrecipData.getDates();
 	buildLineChart.data.datasets[0].data = dailyPrecip(site, "actualPrecip");
-	// console.log(dailyPrecip(site, "actualPrecip"));
 	buildLineChart.data.datasets[1].data = dailyPrecip(site, "normalPrecip");
 	buildLineChart.options.plugins.title.text = `Monsoon Rainfall for ${
 		selectSitePrecip.options[selectSitePrecip.selectedIndex].text
@@ -544,17 +569,15 @@ function updateTotalPrecipData(sites, actual, normal) {
 	buildBarChart.data.labels = sites;
 	buildBarChart.data.datasets[0].data = actual;
 	buildBarChart.data.datasets[1].data = normal;
+	buildBarChart.options.plugins.title.text = `${precipYear.value} Monsoon Rainfall vs. Normal`;
 	buildBarChart.update();
 }
 
 // publishes latest update to graphs
 function getLastUpdate() {
-	lastUpdate.innerHTML = "*** Will Begin After June 15th ***";
-	if (precipData.date.length !== 0) {
-		lastUpdate.innerHTML = `Last Update:<br /><em><b>${
-			precipData.date[precipData.date.length - 1]
-		}/${currentYear}</em></b>`;
-	}
+	let currentDate = new Date();
+	currentDate.setDate(currentDate.getDate() - 1);
+	lastUpdate.innerHTML = `Last Update:<br /><em>${currentDate.toLocaleDateString()}</em>`;
 }
 
 // uses chart JS to build total precip chart
@@ -727,10 +750,21 @@ async function fetchXmacisPrecip(selectedRegion) {
 
 // updates precip bar and line chanrts when changing year
 precipYear.addEventListener("change", () => {
-	getPrecipData(precipRegion.value);
+	getPrecipData.fetchNew(precipRegion.value);
 });
 
 // updates precip bar and line chanrts when changing region
 precipRegion.addEventListener("change", () => {
-	getPrecipData(precipRegion.value);
+	fillPrecipSites();
+	getPrecipData.fetchNew(precipRegion.value);
 });
+
+function fillPrecipSites() {
+	selectSitePrecip.innerHTML = "";
+	for (let [i, site] of avgDewpoints.regionalSitesList[precipRegion.value].entries()) {
+		const option = document.createElement("option");
+		option.value = i;
+		option.textContent = site.name;
+		selectSitePrecip.append(option);
+	}
+}
