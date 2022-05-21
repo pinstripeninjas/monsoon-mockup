@@ -4658,16 +4658,24 @@
 				"name": "Gila Bend"
 			},
 			{
-				"site": "quaa3",
-				"name": "Quartzsite"
+				"site": "glea3",
+				"name": "Globe"
 			},
 			{
 				"site": "apna3",
 				"name": "Apache Junction"
 			},
 			{
-				"site": "glea3",
-				"name": "Globe"
+				"site": "taca3",
+				"name": "Tacna"
+			},
+			{
+				"site": "quaa3",
+				"name": "Quartzsite"
+			},
+			{
+				"site": "para3",
+				"name": "Parker"
 			},
 			{
 				"site": "knyl",

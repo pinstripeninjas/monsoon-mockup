@@ -164,8 +164,6 @@ function getData() {
 	)
 		.then((res) => res.json())
 		.then((data) => {
-			// console.log(data);
-			// console.log(data.STATION[0].OBSERVATIONS.date_time);
 			const dates = data.STATION[0].OBSERVATIONS.date_time;
 			const values = data.STATION[0].OBSERVATIONS.dew_point_temperature_set_1;
 			calcDailyAvg(dates, values);
@@ -436,10 +434,6 @@ let sites = [];
 let actualPrecip = [];
 let normalPrecip = [];
 
-// const currentYear = "2021";
-
-// "../../images/twc/monsoonPCP/2020PCP.json"
-
 // try as module pattern
 const getPrecipData = (() => {
 	let sites = [];
@@ -479,7 +473,6 @@ const getPrecipData = (() => {
 		fullPrecipData = [];
 		const precipData = await fetchXmacisPrecip(precipRegion.value);
 		fullPrecipData = precipData;
-		console.log(precipData);
 		// fill sites
 		for (let site of avgDewpoints.regionalSitesList[region]) {
 			sites.push(site.name);
@@ -600,7 +593,7 @@ const buildBarChart = new Chart(barChart, {
 			},
 		],
 	},
-
+	plugins: [plugin],
 	// Configuration options go here
 	options: {
 		maintainAspectRatio: false,

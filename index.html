@@ -32,43 +32,20 @@
 				</nav>
 				<div class="displays" id="seasonOverview">
 					<h2>Current Season Overview</h2>
-					<!-- Dew point chart -->
-					<div class="dewpoint-chart">
-						<div class="card chart-container">
-							<canvas id="myChart"></canvas>
-						</div>
-						<div class="flex flex-column flex-grow">
-							<div>
-								<div>Select Site:</div>
-								<select name="site" id="selectSite">
-									<option selected value="ktus">Tucson Airport</option>
-									<option value="kflg">Flagstaff Airport</option>
-									<option value="knyl">Yuma Airport</option>
-									<option value="kphx">Phoenix Sky Harbor</option>
-									<option value="kelp">El Paso Airport</option>
-									<option value="kabq">Albuquerque Airport</option>
-								</select>
-							</div>
-							<div>
-								<div class="mt-20">Select Year:</div>
-								<select name="dewpointYear" id="dewpointYear"></select>
-							</div>
-							<div class="chart-controls">
-								<p>Readout:</p>
-								<p><em>Hover Over Point</em></p>
-								<br />
-								<p>Zoom:</p>
-								<p>
-									<em>CTRL + Mouse Wheel or <br />Left-Click & Drag</em>
-								</p>
-								<br />
-								<p>Pan:</p>
-								<p><em>ALT + Left-Click & Drag</em></p>
-							</div>
-						</div>
+					<!-- Latest precip climas map -->
+					<div style="width: 70%; margin: 0 auto 30px">
+						<h4 class="precipTitle">Most Recent 24-hr Precipitation</h4>
+						<a
+							href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_LatestDay.png"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<img
+								src="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_LatestDay.png"
+								alt="total-monsoon-precipitation"
+							/>
+						</a>
 					</div>
-					<br />
-
 					<!-- Bar Charts -->
 					<div class="precip-chart">
 						<div class="card">
@@ -113,6 +90,43 @@
 							</div>
 						</div>
 					</div>
+
+					<!-- Dew point chart -->
+					<div class="dewpoint-chart">
+						<div class="card chart-container">
+							<canvas id="myChart"></canvas>
+						</div>
+						<div class="flex flex-column flex-grow">
+							<div>
+								<div>Select Site:</div>
+								<select name="site" id="selectSite">
+									<option selected value="ktus">Tucson Airport</option>
+									<option value="kflg">Flagstaff Airport</option>
+									<option value="knyl">Yuma Airport</option>
+									<option value="kphx">Phoenix Sky Harbor</option>
+									<option value="kelp">El Paso Airport</option>
+									<option value="kabq">Albuquerque Airport</option>
+								</select>
+							</div>
+							<div>
+								<div class="mt-20">Select Year:</div>
+								<select name="dewpointYear" id="dewpointYear"></select>
+							</div>
+							<div class="chart-controls">
+								<p>Readout:</p>
+								<p><em>Hover Over Point</em></p>
+								<br />
+								<p>Zoom:</p>
+								<p>
+									<em>CTRL + Mouse Wheel or <br />Left-Click & Drag</em>
+								</p>
+								<br />
+								<p>Pan:</p>
+								<p><em>ALT + Left-Click & Drag</em></p>
+							</div>
+						</div>
+					</div>
+					<br />
 				</div>
 				<div class="displays d-none" id="monsoonStats">
 					<h2>Monsoon Statistics</h2>
@@ -177,7 +191,11 @@
 					<div class="precipMapsContainer">
 						<div>
 							<h4 class="precipTitle">Total Monsoon Precipitation</h4>
-							<a href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_TotalPrecip.png">
+							<a
+								href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_TotalPrecip.png"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<img
 									src="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_TotalPrecip.png"
 									alt="total-monsoon-precipitation"
@@ -186,7 +204,11 @@
 						</div>
 						<div>
 							<h4 class="precipTitle">Precent of Average Monsoon Precipitation</h4>
-							<a href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_PercPrecip.png">
+							<a
+								href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_PercPrecip.png"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<img
 									src="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_PercPrecip.png"
 									alt="percent-of-average-monsoon-precipitation"
@@ -194,7 +216,66 @@
 							</a>
 						</div>
 					</div>
-					<a href="https://cals.arizona.edu/climate/misc/monsoon/az_monsoon.html">CLIMAS</a>
+					<h4 class="mt-20">
+						More monsoon tracking maps and resources can be found at the following links:
+					</h4>
+					<ul>
+						<li>
+							<a
+								href="https://cals.arizona.edu/climate/misc/monsoon/az_monsoon.html"
+								target="_blank"
+								rel="noopener noreferrer"
+								>Arizona Summer Monsoon Season Precipitation Mapping (NOAA-AHPS data)</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://cals.arizona.edu/climate/misc/monsoon/nm_monsoon.html"
+								target="_blank"
+								rel="noopener noreferrer"
+								>New Mexico Summer Monsoon Season Precipitation Mapping (NOAA-AHPS data)</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://cals.arizona.edu/climate/misc/SWMonsoonMaps/current/swus_monsoon.html"
+								target="_blank"
+								rel="noopener noreferrer"
+								>Southwest Summer Monsoon Season Precipitation Mapping (PRISM data)</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://cals.arizona.edu/climate/misc/stations/index.html"
+								target="_blank"
+								rel="noopener noreferrer"
+								>Southwest U.S. Station Climate Summaries</a
+							>
+						</li>
+						<li>
+							<a href="https://climas.arizona.edu/swco" target="_blank" rel="noopener noreferrer"
+								>Southwest Climate Outlook</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://climas.arizona.edu/media/podcasts"
+								target="_blank"
+								rel="noopener noreferrer"
+								>Southwest Climate Podcast</a
+							>
+						</li>
+					</ul>
+					<p>
+						These resources are provided by
+						<a href="https://cals.arizona.edu/climate/" target="_blank" rel="noopener noreferrer"
+							>University of Arizona Cooperative Extension</a
+						>
+						and the
+						<a href="https://climas.arizona.edu/" target="_blank" rel="noopener noreferrer"
+							>Climate Assessment for the Southwest</a
+						>.
+					</p>
 				</div>
 			</div>
 		</div>
