@@ -5,7 +5,6 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Monsoon Mockup</title>
-		<link rel="stylesheet" href="style.css" />
 		<link rel="shortcut icon" href="./img/150px-NOAA-Logo.png" type="image/x-icon" />
 	</head>
 	<body>
@@ -13,6 +12,7 @@
 			<img style="width: 100%" src="./img/nws-header.png" alt="header" />
 			<div id="pagebody">
 				<!-- Here's what actually matters -->
+				<link rel="stylesheet" href="../media/twc/monsoon/monsoon-tracker.css" />
 				<nav>
 					<button class="button-30" id="seasonOverviewBtn" role="button">
 						Current Season Overview
@@ -149,22 +149,26 @@
 						<b>Rainfall by Month *Preliminary for Current Year*</b>
 					</div>
 					<div id="precipTable"></div>
-					<img id="haywoodPlot" src="./img/tucson-haywood.png" alt="Tucson Haywood Plot" />
+					<img
+						id="haywoodPlot"
+						src="../images/twc/monsoon/2022MonsoonvsALLyears_Tucson.png"
+						alt="Tucson Haywood Plot"
+					/>
 				</div>
 				<div class="displays d-none" id="monsoonEd">
 					<h2>Monsoon Education</h2>
 					<div class="flex flex-align-center mb-20">
 						<div class="mr-10">Select a topic:</div>
 						<select class="mr-10" id="monsoonEdSelect" style="width: 300px">
-							<option selected value="monsoonWhatIs">What Is A Monsoon?</option>
-							<option value="NAmonsoon">North American Monsoon</option>
-							<option value="gulfSurge">Gulf Surge</option>
-							<option value="monsoonProg">Monsoon Progression</option>
-							<option value="monsoonVar">Inter-Annual Variability</option>
-							<option value="monsoonPat">Severe Thunderstorm/Flash Flood Patterns</option>
-							<option value="monsoonLows">Monsoon Upper-Level Lows</option>
-							<option value="monsoonSafety">Monsoon Safety</option>
-							<option value="monsoonRef">For More Reading</option>
+							<option selected value="monsoon_whatis">What Is A Monsoon?</option>
+							<option value="monsoon_NA">North American Monsoon</option>
+							<option value="monsoon_gulfsurge">Gulf Surge</option>
+							<option value="monsoon_progression">Monsoon Progression</option>
+							<option value="monsoon_variability">Inter-Annual Variability</option>
+							<option value="monsoon_patterns">Severe Thunderstorm/Flash Flood Patterns</option>
+							<option value="monsoon_upperlevellows">Monsoon Upper-Level Lows</option>
+							<option value="monsoon_safety">Monsoon Safety</option>
+							<option value="monsoon_references">For More Reading</option>
 						</select>
 						<div>
 							Trouble viewing?
@@ -297,6 +301,6 @@
 			crossorigin="anonymous"
 			referrerpolicy="no-referrer"
 		></script>
-		<script src="./script.js"></script>
+		<script src="../media/twc/monsoon/monsoon-tracker.js"></script>
 	</body>
 </html>

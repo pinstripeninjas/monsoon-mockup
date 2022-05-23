@@ -26,7 +26,7 @@ const precipYear = document.querySelector("#precipYear");
 const precipRegion = document.querySelector("#precipRegion");
 
 let avgDewpoints = {};
-fetch("./json/avg-dewpoints.json")
+fetch("../media/twc/monsoon/avg-dewpoints.json")
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
@@ -62,14 +62,14 @@ function adjustDisplay(selected) {
 
 // select element that switches between the different PDFs
 monsoonEdSelect.addEventListener("change", (e) => {
-	monsoonEdPDF.src = `./pdfs/${e.target.value}.pdf`;
+	monsoonEdPDF.src = `../media/twc/monsoon/${e.target.value}.pdf`;
 });
 
 // attempt at custom image background
 const bgImage = new Image();
-bgImage.src = "./img/150px-NOAA-Logo.png";
+bgImage.src = "../images/twc/monsoon/150px-NOAA-Logo.png";
 const bgImage2 = new Image();
-bgImage2.src = "./img/150px-NWS-Logo.png";
+bgImage2.src = "../images/twc/monsoon/150px-NWS-Logo.png";
 
 const plugin = {
 	id: "custom_canvas_background_image",
