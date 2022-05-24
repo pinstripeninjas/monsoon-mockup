@@ -26,7 +26,7 @@ const precipYear = document.querySelector("#precipYear");
 const precipRegion = document.querySelector("#precipRegion");
 
 let avgDewpoints = {};
-fetch("../media/twc/monsoon/avg-dewpoints.json")
+fetch("../source/twc/monsoon/avg-dewpoints.json")
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
@@ -62,7 +62,7 @@ function adjustDisplay(selected) {
 
 // select element that switches between the different PDFs
 monsoonEdSelect.addEventListener("change", (e) => {
-	monsoonEdPDF.src = `../media/twc/monsoon/${e.target.value}.pdf`;
+	monsoonEdPDF.src = `../source/twc/monsoon/${e.target.value}.pdf`;
 });
 
 // attempt at custom image background
