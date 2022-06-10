@@ -25,8 +25,36 @@ const dewpointYear = document.querySelector("#dewpointYear");
 const precipYear = document.querySelector("#precipYear");
 const precipRegion = document.querySelector("#precipRegion");
 
+// get host url for dev or prod routing
+const fileRouting = (() => {
+	const isNWS = () => {
+		const host = window.location.host;
+		if (host.includes("www.weather.gov")) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	const getRoot = (rootFolder, nestedFolder = "") => {
+		console.log(isNWS());
+		if (isNWS()) {
+			if (nestedFolder.length > 0) {
+				return `../${rootFolder}/twc/${nestedFolder}/`;
+			} else {
+				return `../${rootFolder}/twc/`;
+			}
+		} else {
+			return `./${nestedFolder}/`;
+		}
+	};
+
+	return { getRoot };
+})();
+
 let avgDewpoints = {};
-fetch("../source/twc/monsoon/avg-dewpoints.json")
+fetch(`${fileRouting.getRoot("source", "monsoon")}avg-dewpoints.json`)
+	// fetch("../source/twc/monsoon/avg-dewpoints.json")
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
@@ -62,14 +90,14 @@ function adjustDisplay(selected) {
 
 // select element that switches between the different PDFs
 monsoonEdSelect.addEventListener("change", (e) => {
-	monsoonEdPDF.src = `../source/twc/monsoon/${e.target.value}.pdf`;
+	monsoonEdPDF.src = `${fileRouting.getRoot("source", "monsoon")}${e.target.value}.pdf`;
 });
 
 // attempt at custom image background
 const bgImage = new Image();
-bgImage.src = "../images/twc/monsoon/150px-NOAA-Logo.png";
+bgImage.src = `${fileRouting.getRoot("images", "monsoon")}150px-NOAA-Logo.png`;
 const bgImage2 = new Image();
-bgImage2.src = "../images/twc/monsoon/150px-NWS-Logo.png";
+bgImage2.src = `${fileRouting.getRoot("images", "monsoon")}150px-NWS-Logo.png`;
 
 const plugin = {
 	id: "custom_canvas_background_image",
@@ -283,6 +311,38 @@ function popTop10(site) {
 	}
 }
 
+// come back to this later...
+// populate precip tables with xmacis, need to pull June 1-14 and months with parallel fetch
+// async function popTable2(site) {
+// 		const urlBase = "https://data.rcc-acis.org/StnData";
+// 		const elements = {
+// 			sids: site,
+// 			sdate: `${selectedYear}-06-14`,
+// 			edate: `${selectedYear}-06-14`,
+// 			elems: [
+// 				{
+// 					name: "pcpn",
+// 					duration: "std",
+// 					interval: [1, 0, 0],
+// 					seasonStart: [6, 1],
+// 					reduce: {
+// 						add: "mcnt",
+// 						reduce: "sum"
+// 					}
+// 				},
+// 				{
+// 					name: "pcpn",
+// 					duration: "std",
+// 					smry: "sum",
+// 					normal: "1",
+// 				},
+// 			],
+// 		};
+// 	const precipHistory = await fetch();
+// 	const precipData = await precipHistory.json();
+// 	console.log(precipData);
+// }
+
 // populate table with historical precip data
 async function popTable(site) {
 	precipTable.innerHTML = "Loading...";
@@ -393,8 +453,9 @@ async function getXmacisData(site, monthly) {
 	}
 	// "smry": ["0.00"]
 	else {
+		console.log(data.smry[0]);
 		// replace "M" or "T" with 0.00
-		if (data.smry[0] === "M" || value[1] === "T") {
+		if (data.smry[0] === "M" || data.smry[0] === "T") {
 			data.smry[0] = "0.00";
 		}
 		return data.smry;

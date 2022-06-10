@@ -12,7 +12,8 @@
 			<img style="width: 100%" src="./img/nws-header.png" alt="header" />
 			<div id="pagebody">
 				<!-- Here's what actually matters -->
-				<link rel="stylesheet" href="../source/twc/monsoon/monsoon-tracker.css" />
+				<link rel="stylesheet" href="./monsoon-tracker.css" />
+				<!-- <link rel="stylesheet" href="../source/twc/monsoon/monsoon-tracker.css" /> -->
 				<nav>
 					<button class="button-30" id="seasonOverviewBtn" role="button">
 						Current Season Overview
@@ -25,7 +26,7 @@
 						rel="noopener noreferrer"
 						id="precipMapsBtn"
 					>
-						Detailed Precip Maps
+						Satellite and Precip Maps
 					</button>
 					<button class="button-30" id="monsoonStatsBtn" role="button">Monsoon Stats</button>
 					<button class="button-30" id="monsoonEdBtn" role="button">Monsoon Education</button>
@@ -140,6 +141,7 @@
 							<option value="kabq">Albuquerque Airport</option>
 							<option value="klas">Las Vegas Airport</option>
 							<option value="kigm">Kingman Airport</option>
+							<option value="kelp">El Paso</option>
 						</select>
 						<a id="haywoodLink" href="#haywoodPlot">Tucson Haywood Plot</a>
 					</div>
@@ -191,7 +193,48 @@
 					</div>
 				</div>
 				<div class="displays d-none" id="precipMaps">
-					<h2>Detailed Precip Maps</h2>
+					<h2>Satellite and Precip Maps</h2>
+					<div class="satellite-container">
+						<div>
+							<h4 class="precipTitle">GOES West</h4>
+							<a
+								href="https://www.star.nesdis.noaa.gov/goes/conus_band.php?sat=G17&band=09&length=120"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/CONUS/09/20221610301_GOES17-ABI-CONUS-09-416x250.jpg"
+									alt="GOES West"
+								/>
+							</a>
+						</div>
+						<div>
+							<h4 class="precipTitle">GOES East</h4>
+							<a
+								href="https://www.star.nesdis.noaa.gov/goes/conus_band.php?sat=G16&band=09&length=120"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/20221610301_GOES16-ABI-CONUS-09-416x250.jpg"
+									alt="GOES East"
+								/>
+							</a>
+						</div>
+						<div>
+							<h4 class="precipTitle">Precipitable Water</h4>
+							<a
+								href="https://www.ospo.noaa.gov/Products/bTPW/TPW_Animation.html?product=CONUS_TPW"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<img
+									src="https://www.ospo.noaa.gov/Products/bTPW/images/productImages/east_pacific_tpw.jpg"
+									alt="precipitable water"
+								/>
+							</a>
+						</div>
+					</div>
 					<div class="precipMapsContainer">
 						<div>
 							<h4 class="precipTitle">Total Monsoon Precipitation</h4>
@@ -301,6 +344,7 @@
 			crossorigin="anonymous"
 			referrerpolicy="no-referrer"
 		></script>
-		<script src="../source/twc/monsoon/monsoon-tracker.js"></script>
+		<script src="./monsoon-tracker.js"></script>
+		<!-- <script src="../source/twc/monsoon/monsoon-tracker.js"></script> -->
 	</body>
 </html>
