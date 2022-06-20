@@ -35,7 +35,9 @@
 					<h2>Current Season Overview</h2>
 					<!-- Latest precip climas map -->
 					<div style="width: 70%; margin: 0 auto 30px">
-						<h4 class="precipTitle">Most Recent 24-hr Precipitation</h4>
+						<h4 class="precipTitle">
+							Most Recent 24-hr Precipitation (ending 7am MST on date listed)
+						</h4>
 						<a
 							href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_LatestDay.png"
 							target="_blank"
@@ -156,6 +158,11 @@
 						src="../images/twc/monsoon/2022MonsoonvsALLyears_Tucson.png"
 						alt="Tucson Haywood Plot"
 					/>
+					<img
+						src="../images/twc/monsoon/Monsoon_startdates.png"
+						alt="historical monsoon start dates"
+						id="start-dates"
+					/>
 				</div>
 				<div class="displays d-none" id="monsoonEd">
 					<h2>Monsoon Education</h2>
@@ -185,7 +192,7 @@
 					<div style="width: 100%; height: 100vh">
 						<embed
 							id="monsoonEdPDF"
-							src="../media/monsoon/monsoon_whatis.pdf"
+							src="../media/twc/monsoon/monsoon_whatis.pdf"
 							type="application/pdf"
 							width="100%"
 							height="100%"
@@ -203,9 +210,10 @@
 								rel="noopener noreferrer"
 							>
 								<img
-									src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/CONUS/09/20221610301_GOES17-ABI-CONUS-09-416x250.jpg"
+									src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/SECTOR/wus/09/250x250.jpg"
 									alt="GOES West"
 								/>
+								<!-- src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/CONUS/09/20221610301_GOES17-ABI-CONUS-09-416x250.jpg" -->
 							</a>
 						</div>
 						<div>
@@ -216,9 +224,10 @@
 								rel="noopener noreferrer"
 							>
 								<img
-									src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/20221610301_GOES16-ABI-CONUS-09-416x250.jpg"
+									src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/416x250.jpg"
 									alt="GOES East"
 								/>
+								<!-- src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/20221610301_GOES16-ABI-CONUS-09-416x250.jpg" -->
 							</a>
 						</div>
 						<div>

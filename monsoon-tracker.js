@@ -90,7 +90,7 @@ function adjustDisplay(selected) {
 
 // select element that switches between the different PDFs
 monsoonEdSelect.addEventListener("change", (e) => {
-	monsoonEdPDF.src = `${fileRouting.getRoot("source", "monsoon")}${e.target.value}.pdf`;
+	monsoonEdPDF.src = `${fileRouting.getRoot("media", "monsoon")}${e.target.value}.pdf`;
 });
 
 // attempt at custom image background
