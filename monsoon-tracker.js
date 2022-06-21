@@ -19,6 +19,7 @@ const precipTable = document.querySelector("#precipTable");
 const precipTop10 = document.querySelector("#precipTop10");
 const haywoodLink = document.querySelector("#haywoodLink");
 const haywoodPlot = document.querySelector("#haywoodPlot");
+const startDates = document.querySelector("#startDates");
 const precipMaps = document.querySelector("#precipMaps");
 const precipMapsBtn = document.querySelector("#precipMapsBtn");
 const dewpointYear = document.querySelector("#dewpointYear");
@@ -37,7 +38,6 @@ const fileRouting = (() => {
 	};
 
 	const getRoot = (rootFolder, nestedFolder = "") => {
-		console.log(isNWS());
 		if (isNWS()) {
 			if (nestedFolder.length > 0) {
 				return `../${rootFolder}/twc/${nestedFolder}/`;
@@ -351,9 +351,11 @@ async function popTable(site) {
 	if (site === "ktus") {
 		haywoodLink.classList.remove("d-none");
 		haywoodPlot.classList.remove("d-none");
+		startDates.classList.remove("d-none");
 	} else {
 		haywoodLink.classList.add("d-none");
 		haywoodPlot.classList.add("d-none");
+		startDates.classList.add("d-none");
 	}
 	// loops through precip data
 	for (let [i, cell] of avgDewpoints[site].precip.entries()) {
@@ -445,7 +447,6 @@ async function getXmacisData(site, monthly) {
 		for (let value of data.data) {
 			// replace "M" or "T" with 0.00
 			if (value[1] === "M" || value[1] === "T") {
-				console.log(value[1]);
 				value[1] = "0.00";
 			}
 		}
@@ -453,7 +454,6 @@ async function getXmacisData(site, monthly) {
 	}
 	// "smry": ["0.00"]
 	else {
-		console.log(data.smry[0]);
 		// replace "M" or "T" with 0.00
 		if (data.smry[0] === "M" || data.smry[0] === "T") {
 			data.smry[0] = "0.00";
@@ -506,18 +506,20 @@ const getPrecipData = (() => {
 	const setDates = () => {
 		// fill all monsoon dates into array
 		dates = [];
+		// year doesn't matter in this case
 		let tempDate = new Date("2020-06-15");
 		for (let i = 0; i < 108; i++) {
 			dates.push(tempDate.toISOString().slice(5, 10));
 			tempDate.setDate(tempDate.getDate() + 1);
 		}
-		const year = precipYear.value;
+		const year = Number(precipYear.value);
+		// check if it is the current year and if it is, remove items from array
 		const isCurrentYear = year === new Date().getFullYear() ? true : false;
 		// remove array items if current year and during monsoon
 		if (isCurrentYear) {
-			// let endingDate = new Date();
 			const endingDate = new Date();
-			// endingDate.setDate(endingDate.getDate() - 1);
+			// change hours so that it updates at 12z each morning
+			endingDate.setHours(endingDate.getHours() - 12);
 			for (let [i, date] of dates.entries()) {
 				if (date === endingDate.toISOString().slice(5, 10)) {
 					dates = dates.slice(0, i);
@@ -532,6 +534,9 @@ const getPrecipData = (() => {
 		actualPrecipTotal = [];
 		normalPrecipTotal = [];
 		fullPrecipData = [];
+		// set the dates, will adjust based on time of year and if
+		// the season has started yet
+		setDates();
 		const precipData = await fetchXmacisPrecip(precipRegion.value);
 		fullPrecipData = precipData;
 		// fill sites
@@ -543,7 +548,6 @@ const getPrecipData = (() => {
 			actualPrecipTotal.push(site.smry[0]);
 			normalPrecipTotal.push(site.smry[1]);
 		}
-		setDates();
 		build();
 	};
 
@@ -629,9 +633,12 @@ function updateTotalPrecipData(sites, actual, normal) {
 
 // publishes latest update to graphs
 function getLastUpdate() {
-	let currentDate = new Date();
-	currentDate.setDate(currentDate.getDate() - 1);
-	lastUpdate.innerHTML = `Last Update:<br /><em>${currentDate.toLocaleDateString()}</em>`;
+	const currentDate = new Date();
+	currentDate.setUTCHours(currentDate.getUTCHours() - 36);
+	const dateArr = currentDate.toISOString().slice(0, 10).split("-");
+	const printThisDate = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]} 5am MST`;
+	// currentDate.setDate(currentDate.getDate() - 1);
+	lastUpdate.innerHTML = `Last Update:<br /><em>${printThisDate}</em>`;
 }
 
 // uses chart JS to build total precip chart
@@ -773,6 +780,7 @@ function hasSeasonStarted() {
 // will return array of each site's climate data
 // inside that is another array with actual and normal precip
 async function fetchXmacisPrecip(selectedRegion) {
+	const datesArray = getPrecipData.getDates();
 	const sitesArray = [];
 	for (let site of avgDewpoints.regionalSitesList[selectedRegion]) {
 		sitesArray.push(site.site);
@@ -781,8 +789,8 @@ async function fetchXmacisPrecip(selectedRegion) {
 	const urlBase = "https://data.rcc-acis.org/MultiStnData";
 	const elements = {
 		sids: sitesArray.toString(),
-		sdate: `${selectedYear}-06-15`,
-		edate: `${selectedYear}-09-30`,
+		sdate: `${selectedYear}-${datesArray[0]}`,
+		edate: `${selectedYear}-${datesArray[datesArray.length - 1]}`,
 		elems: [
 			{
 				name: "pcpn",

@@ -36,7 +36,7 @@
 					<!-- Latest precip climas map -->
 					<div style="width: 70%; margin: 0 auto 30px">
 						<h4 class="precipTitle">
-							Most Recent 24-hr Precipitation (ending 7am MST on date listed)
+							Most Recent 24-hr Precipitation (ending 5am MST on date listed)
 						</h4>
 						<a
 							href="https://cals.arizona.edu/climate/misc/monsoon/AZ_Monsoon_LatestDay.png"
@@ -145,7 +145,10 @@
 							<option value="kigm">Kingman Airport</option>
 							<option value="kelp">El Paso</option>
 						</select>
-						<a id="haywoodLink" href="#haywoodPlot">Tucson Haywood Plot</a>
+						<div id="haywoodLink">
+							<a class="mr-10" href="#haywoodPlot">Tucson Haywood Plot</a>
+							<a href="#startDates">Tucson Monsoon Start Dates</a>
+						</div>
 					</div>
 					<div class="mb-10 text-center" id="monsoonStatsPor"></div>
 					<table id="precipTop10"></table>
@@ -155,13 +158,14 @@
 					<div id="precipTable"></div>
 					<img
 						id="haywoodPlot"
-						src="../images/twc/monsoon/2022MonsoonvsALLyears_Tucson.png"
+						src="https://weather.gov/images/twc/monsoon/2022MonsoonvsALLyears_Tucson.png"
 						alt="Tucson Haywood Plot"
 					/>
 					<img
-						src="../images/twc/monsoon/Monsoon_startdates.png"
+						src="https://weather.gov/images/twc/monsoon/Monsoon_startdates.png"
 						alt="historical monsoon start dates"
-						id="start-dates"
+						id="startDates"
+						style="display: block; width: 80%; margin: 30px auto"
 					/>
 				</div>
 				<div class="displays d-none" id="monsoonEd">
@@ -213,7 +217,6 @@
 									src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/SECTOR/wus/09/250x250.jpg"
 									alt="GOES West"
 								/>
-								<!-- src="https://cdn.star.nesdis.noaa.gov/GOES17/ABI/CONUS/09/20221610301_GOES17-ABI-CONUS-09-416x250.jpg" -->
 							</a>
 						</div>
 						<div>
@@ -227,7 +230,6 @@
 									src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/416x250.jpg"
 									alt="GOES East"
 								/>
-								<!-- src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/09/20221610301_GOES16-ABI-CONUS-09-416x250.jpg" -->
 							</a>
 						</div>
 						<div>
