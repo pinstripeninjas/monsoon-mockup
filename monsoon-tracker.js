@@ -633,12 +633,14 @@ function updateTotalPrecipData(sites, actual, normal) {
 
 // publishes latest update to graphs
 function getLastUpdate() {
-	const currentDate = new Date();
-	currentDate.setUTCHours(currentDate.getUTCHours() - 36);
-	const dateArr = currentDate.toISOString().slice(0, 10).split("-");
-	const printThisDate = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]} 5am MST`;
-	// currentDate.setDate(currentDate.getDate() - 1);
-	lastUpdate.innerHTML = `Last Update:<br /><em>${printThisDate}</em>`;
+	// const currentDate = new Date();
+	// currentDate.setUTCHours(currentDate.getUTCHours() - 36);
+	// const dateArr = currentDate.toISOString().slice(0, 10).split("-");
+	// const printThisDate = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]} 5am MST`;
+	// lastUpdate.innerHTML = `Precip through:<br /><em>${printThisDate}</em>`;
+	const year = precipYear.value;
+	const date = getPrecipData.getDates();
+	lastUpdate.innerHTML = `Precip Totals Through:<br /><em>${date[date.length - 1]}-${year}</em>`;
 }
 
 // uses chart JS to build total precip chart
