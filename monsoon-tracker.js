@@ -54,7 +54,6 @@ const fileRouting = (() => {
 
 let avgDewpoints = {};
 fetch(`${fileRouting.getRoot("source", "monsoon")}avg-dewpoints.json`)
-	// fetch("../source/twc/monsoon/avg-dewpoints.json")
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
@@ -188,36 +187,57 @@ function getData() {
 	const selectedYear = dewpointYear.value;
 	// dates begin one hour before the start of the season
 	fetch(
-		`https://api.synopticdata.com/v2/stations/timeseries?stid=${selectSite.value}&start=${selectedYear}06150600&end=${selectedYear}10010700&units=english&hfmetars=0&vars=dew_point_temperature&obtimezone=local&token=e56e04d76bad41229d6c0f7076d54d59`
+		`https://api.synopticdata.com/v2/stations/timeseries?stid=${selectSite.value}&start=${selectedYear}06150700&end=${selectedYear}10010700&units=english&hfmetars=0&vars=dew_point_temperature&obtimezone=local&token=e56e04d76bad41229d6c0f7076d54d59`
 	)
 		.then((res) => res.json())
 		.then((data) => {
 			const dates = data.STATION[0].OBSERVATIONS.date_time;
 			const values = data.STATION[0].OBSERVATIONS.dew_point_temperature_set_1;
+			console.log(dates);
+			console.log(values);
 			calcDailyAvg(dates, values);
 		});
 }
 
 function calcDailyAvg(datesArr, valuesArr) {
-	let finalDatesArr = [];
+	let finalDatesArr = [datesArr[0].substring(0, 10)];
 	let finalValuesArr = [];
 	let currentDate = datesArr[0].substring(0, 10);
 	let currentValuesArr = [];
+
+	const calcAvg = (date, i) => {
+		// calculate avg
+		const sum = currentValuesArr.reduce((a, b) => a + b, 0);
+		const avg = +(sum / currentValuesArr.length).toFixed(1);
+		// set final values
+		finalDatesArr.push(date.substring(0, 10));
+		finalValuesArr.push(avg);
+		// reset values and establish new day
+		currentDate = date.substring(0, 10);
+		currentValuesArr = [];
+		currentValuesArr.push(valuesArr[i]);
+	};
 	for (const [i, date] of datesArr.entries()) {
 		// if date matches current date, add value to array
 		if (date.substring(0, 10) === currentDate) {
 			currentValuesArr.push(valuesArr[i]);
+			if (datesArr.length - 1 === i) {
+				console.log("HELLO");
+				// if last date, calculate avg and set finalvalues
+				calcAvg(date, i);
+			}
 		} else {
-			// calculate avg
-			const sum = currentValuesArr.reduce((a, b) => a + b, 0);
-			const avg = +(sum / currentValuesArr.length).toFixed(1);
-			// set final values
-			finalDatesArr.push(date.substring(0, 10));
-			finalValuesArr.push(avg);
-			// reset values and establish new day
-			currentDate = date.substring(0, 10);
-			currentValuesArr = [];
-			currentValuesArr.push(valuesArr[i]);
+			calcAvg(date, i);
+			// // calculate avg
+			// const sum = currentValuesArr.reduce((a, b) => a + b, 0);
+			// const avg = +(sum / currentValuesArr.length).toFixed(1);
+			// // set final values
+			// finalDatesArr.push(date.substring(0, 10));
+			// finalValuesArr.push(avg);
+			// // reset values and establish new day
+			// currentDate = date.substring(0, 10);
+			// currentValuesArr = [];
+			// currentValuesArr.push(valuesArr[i]);
 		}
 	}
 	// update chart labels and data
@@ -235,6 +255,7 @@ function calcDailyAvg(datesArr, valuesArr) {
 	dewpointChart.data.datasets[1].label = `Avg Dewpoint (${
 		avgDewpoints[selectSite.value].dewpoints.por
 	})`;
+	console.log(finalDatesArr);
 	dewpointChart.update();
 }
 
@@ -633,11 +654,6 @@ function updateTotalPrecipData(sites, actual, normal) {
 
 // publishes latest update to graphs
 function getLastUpdate() {
-	// const currentDate = new Date();
-	// currentDate.setUTCHours(currentDate.getUTCHours() - 36);
-	// const dateArr = currentDate.toISOString().slice(0, 10).split("-");
-	// const printThisDate = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]} 5am MST`;
-	// lastUpdate.innerHTML = `Precip through:<br /><em>${printThisDate}</em>`;
 	const year = precipYear.value;
 	const date = getPrecipData.getDates();
 	lastUpdate.innerHTML = `Precip Totals Through:<br /><em>${date[date.length - 1]}-${year}</em>`;

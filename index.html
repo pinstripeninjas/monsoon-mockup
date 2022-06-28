@@ -32,7 +32,11 @@
 					<button class="button-30" id="monsoonEdBtn" role="button">Monsoon Education</button>
 				</nav>
 				<div class="displays" id="seasonOverview">
-					<h2>Current Season Overview</h2>
+					<div class="d-flex flex-gap-20 border-bottom">
+						<h2 style="border: none; margin: 0">Current Season Overview</h2>
+						<a href="#precip-chart">Precipitation Chart</a>
+						<a href="#dewpoint-chart">Dewpoint Chart</a>
+					</div>
 					<!-- Latest precip climas map -->
 					<div style="width: 70%; margin: 0 auto 30px">
 						<h4 class="precipTitle">
@@ -50,7 +54,7 @@
 						</a>
 					</div>
 					<!-- Bar Charts -->
-					<div class="precip-chart">
+					<div id="precip-chart">
 						<div class="card">
 							<div class="chart-container-2">
 								<canvas id="barChart"></canvas>
@@ -95,7 +99,7 @@
 					</div>
 
 					<!-- Dew point chart -->
-					<div class="dewpoint-chart">
+					<div id="dewpoint-chart">
 						<div class="card chart-container">
 							<canvas id="myChart"></canvas>
 						</div>
