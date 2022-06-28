@@ -193,15 +193,21 @@ function getData() {
 		.then((data) => {
 			const dates = data.STATION[0].OBSERVATIONS.date_time;
 			const values = data.STATION[0].OBSERVATIONS.dew_point_temperature_set_1;
-			console.log(dates);
-			console.log(values);
 			calcDailyAvg(dates, values);
 		});
 }
 
 function calcDailyAvg(datesArr, valuesArr) {
-	let finalDatesArr = [datesArr[0].substring(0, 10)];
 	let finalValuesArr = [];
+	let finalDatesArr = [];
+	// populate all the dates into the array
+	datesArr.forEach((date) => {
+		let reg = new RegExp(date.substring(0, 10), "g");
+		if (!finalDatesArr.some((item) => reg.test(item))) {
+			finalDatesArr.push(date.substring(0, 10));
+		}
+	});
+	// set current date
 	let currentDate = datesArr[0].substring(0, 10);
 	let currentValuesArr = [];
 
@@ -210,34 +216,23 @@ function calcDailyAvg(datesArr, valuesArr) {
 		const sum = currentValuesArr.reduce((a, b) => a + b, 0);
 		const avg = +(sum / currentValuesArr.length).toFixed(1);
 		// set final values
-		finalDatesArr.push(date.substring(0, 10));
 		finalValuesArr.push(avg);
 		// reset values and establish new day
 		currentDate = date.substring(0, 10);
 		currentValuesArr = [];
 		currentValuesArr.push(valuesArr[i]);
 	};
+
 	for (const [i, date] of datesArr.entries()) {
 		// if date matches current date, add value to array
 		if (date.substring(0, 10) === currentDate) {
 			currentValuesArr.push(valuesArr[i]);
 			if (datesArr.length - 1 === i) {
-				console.log("HELLO");
 				// if last date, calculate avg and set finalvalues
 				calcAvg(date, i);
 			}
 		} else {
 			calcAvg(date, i);
-			// // calculate avg
-			// const sum = currentValuesArr.reduce((a, b) => a + b, 0);
-			// const avg = +(sum / currentValuesArr.length).toFixed(1);
-			// // set final values
-			// finalDatesArr.push(date.substring(0, 10));
-			// finalValuesArr.push(avg);
-			// // reset values and establish new day
-			// currentDate = date.substring(0, 10);
-			// currentValuesArr = [];
-			// currentValuesArr.push(valuesArr[i]);
 		}
 	}
 	// update chart labels and data
@@ -255,7 +250,6 @@ function calcDailyAvg(datesArr, valuesArr) {
 	dewpointChart.data.datasets[1].label = `Avg Dewpoint (${
 		avgDewpoints[selectSite.value].dewpoints.por
 	})`;
-	console.log(finalDatesArr);
 	dewpointChart.update();
 }
 
