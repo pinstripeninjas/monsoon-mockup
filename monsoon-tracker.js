@@ -842,3 +842,61 @@ function fillPrecipSites() {
 		selectSitePrecip.append(option);
 	}
 }
+
+// const lightningBar = new Chart(barChart, {
+// 	type: "bar",
+// 	data: {
+// 		labels: [],
+// 		datasets: [
+// 			{
+// 				label: "Actual Rainfall",
+// 				backgroundColor: precipColor1,
+// 				borderColor: precipColor1,
+// 				data: [],
+// 			},
+// 			{
+// 				label: "Normal Rainfall (1991-2020)",
+// 				backgroundColor: precipColor2,
+// 				borderColor: precipColor2,
+// 				data: [],
+// 			},
+// 		],
+// 	},
+// 	plugins: [plugin],
+// 	// Configuration options go here
+// 	options: {
+// 		maintainAspectRatio: false,
+// 		plugins: {
+// 			title: {
+// 				display: true,
+// 				text: `Lightning Strikes in ${precipRegion.value}`,
+// 				font: {
+// 					size: 22,
+// 				},
+// 			},
+// 		},
+// 		scales: {
+// 			yAxes: [
+// 				{
+// 					scaleLabel: {
+// 						display: true,
+// 						labelString: "Number of Strikes",
+// 						fontSize: 14,
+// 					},
+// 					// offset: true,
+// 					ticks: {
+// 						precision: 2,
+// 						beginAtZero: true,
+// 					},
+// 				},
+// 			],
+// 		},
+// 	},
+// });
+
+// const lightningData = async () => {
+// 	const response = await fetch("./monsoon/ltg.json");
+// 	const json = await response.json();
+// 	console.log(json);
+// };
+// lightningData();
