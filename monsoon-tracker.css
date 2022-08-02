@@ -217,7 +217,8 @@ body {
 	margin: 20px 0;
 }
 
-#pagebody #precip-chart {
+#pagebody #precip-chart,
+#pagebody #lightning-chart {
 	display: flex;
 	justify-content: space-between;
 	gap: 20px;

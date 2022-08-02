@@ -4704,5 +4704,61 @@
 				"name": "Winslow"
 			}
 		]
+	},
+	"lightningSitesList": {
+		"AZ": {
+			"name": "Arizona"
+		},
+		"Coconino": {
+			"name": "Coconino County"
+		},
+		"Graham": {
+			"name": "Graham County"
+		},
+		"Maricopa": {
+			"name": "Maricopa County"
+		},
+		"Gila": {
+			"name": "Gila County"
+		},
+		"Apache": {
+			"name": "Apache County"
+		},
+		"Greenlee": {
+			"name": "Greenlee County"
+		},
+		"Santa Cruz": {
+			"name": "Santa Cruz County"
+		},
+		"Pinal": {
+			"name": "Pinal County"
+		},
+		"Cochise": {
+			"name": "Cochise County"
+		},
+		"Navajo": {
+			"name": "Navajo County"
+		},
+		"Mohave": {
+			"name": "Mohave County"
+		},
+		"Pima": {
+			"name": "Pima County"
+		},
+		"Yavapai": {
+			"name": "Yavapai County"
+		},
+		"Yuma": {
+			"name": "Yuma County"
+		},
+		"La Paz": {
+			"name": "La Paz County"
+		},
+		"Phoenix": {
+			"name": "Phoenix Metro"
+		},
+		"Tucson": {
+			"name": "Tucson Metro"
+		}
 	}
 }

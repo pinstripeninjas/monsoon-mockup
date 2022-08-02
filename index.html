@@ -35,6 +35,7 @@
 					<div class="d-flex flex-gap-20 border-bottom">
 						<h2 style="border: none; margin: 0">Current Season Overview</h2>
 						<a href="#precip-chart">Precipitation Chart</a>
+						<a href="#lightning-chart">Lightning Chart</a>
 						<a href="#dewpoint-chart">Dewpoint Chart</a>
 					</div>
 					<!-- Latest precip climas map -->
@@ -79,10 +80,9 @@
 									<option value="1">Nogales</option>
 									<option value="2">Safford</option>
 									<option value="3">Sierra Vista</option>
-									<option value="4">Oracle</option>
-									<option value="5">Willcox</option>
-									<option value="6">Picacho Peak</option>
-									<option value="7">Ajo</option>
+									<option value="4">Willcox</option>
+									<option value="5">Picacho Peak</option>
+									<option value="6">Ajo</option>
 								</select>
 							</div>
 							<div>
@@ -94,6 +94,48 @@
 								<p><em>Hover Over Chart</em></p>
 								<br />
 								<div id="lastUpdate"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Lightning Charts -->
+					<div id="lightning-chart">
+						<div class="card">
+							<div class="chart-container-2">
+								<canvas id="lightningBarChart"></canvas>
+							</div>
+							<div class="chart-container-2">
+								<canvas id="lightningLineChart"></canvas>
+							</div>
+						</div>
+						<div class="flex flex-column flex-grow">
+							<div>
+								<div>Select Region:</div>
+								<select name="lightningRegionSelect" id="lightningRegionSelect"></select>
+							</div>
+							<div class="chart-controls">
+								<p>Readout:</p>
+								<p><em>Hover Over Chart</em></p>
+								<br />
+								<div id="lastLightningUpdate"></div>
+								<br />
+								<p>Zoom:</p>
+								<p>
+									<em>CTRL + Mouse Wheel or <br />Left-Click & Drag</em>
+								</p>
+								<br />
+								<p>Pan:</p>
+								<p><em>ALT + Left-Click & Drag</em></p>
+								<br />
+								<p>Information:</p>
+								<p>
+									<em
+										>These charts show the number of lightning strikes in the selected region. The
+										bar chart displays total strikes to date for each year, as well as the total for
+										the entire season ending September 30th. The charts are updated around 5pm
+										daily.</em
+									>
+								</p>
 							</div>
 						</div>
 					</div>

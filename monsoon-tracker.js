@@ -26,6 +26,11 @@ const dewpointYear = document.querySelector("#dewpointYear");
 const precipYear = document.querySelector("#precipYear");
 const precipRegion = document.querySelector("#precipRegion");
 
+const lightningRegionSelect = document.querySelector("#lightningRegionSelect");
+const lightningLineChart = document.getElementById("lightningLineChart").getContext("2d");
+const lightningBarChart = document.getElementById("lightningBarChart").getContext("2d");
+const lastLightningUpdate = document.querySelector("#lastLightningUpdate");
+
 // get host url for dev or prod routing
 const fileRouting = (() => {
 	const isNWS = () => {
@@ -98,6 +103,7 @@ bgImage.src = `${fileRouting.getRoot("images", "monsoon")}150px-NOAA-Logo.png`;
 const bgImage2 = new Image();
 bgImage2.src = `${fileRouting.getRoot("images", "monsoon")}150px-NWS-Logo.png`;
 
+// plugin required for the chart background image
 const plugin = {
 	id: "custom_canvas_background_image",
 	beforeDraw: (chart) => {
@@ -111,7 +117,7 @@ const plugin = {
 	},
 };
 
-// instantiate chart
+// instantiate dewpoint chart
 const dewpointChart = new Chart(ctx, {
 	type: "line",
 	data: {
@@ -504,13 +510,7 @@ const selectSitePrecip = document.querySelector("#selectSitePrecip");
 const precipColor1 = "#537791";
 const precipColor2 = "#c1c0b9";
 
-let precipData = {};
-let normalData = [];
-let sites = [];
-let actualPrecip = [];
-let normalPrecip = [];
-
-// try as module pattern
+// module pattern that manages precip chart data
 const getPrecipData = (() => {
 	let sites = [];
 	let dates = [];
@@ -843,60 +843,259 @@ function fillPrecipSites() {
 	}
 }
 
-// const lightningBar = new Chart(barChart, {
-// 	type: "bar",
-// 	data: {
-// 		labels: [],
-// 		datasets: [
-// 			{
-// 				label: "Actual Rainfall",
-// 				backgroundColor: precipColor1,
-// 				borderColor: precipColor1,
-// 				data: [],
-// 			},
-// 			{
-// 				label: "Normal Rainfall (1991-2020)",
-// 				backgroundColor: precipColor2,
-// 				borderColor: precipColor2,
-// 				data: [],
-// 			},
-// 		],
-// 	},
-// 	plugins: [plugin],
-// 	// Configuration options go here
-// 	options: {
-// 		maintainAspectRatio: false,
-// 		plugins: {
-// 			title: {
-// 				display: true,
-// 				text: `Lightning Strikes in ${precipRegion.value}`,
-// 				font: {
-// 					size: 22,
-// 				},
-// 			},
-// 		},
-// 		scales: {
-// 			yAxes: [
-// 				{
-// 					scaleLabel: {
-// 						display: true,
-// 						labelString: "Number of Strikes",
-// 						fontSize: 14,
-// 					},
-// 					// offset: true,
-// 					ticks: {
-// 						precision: 2,
-// 						beginAtZero: true,
-// 					},
-// 				},
-// 			],
-// 		},
-// 	},
-// });
+// populate lightning charts from PSR json file
+const lightningControls = (() => {
+	let ltgData = {};
 
-// const lightningData = async () => {
-// 	const response = await fetch("./monsoon/ltg.json");
-// 	const json = await response.json();
-// 	console.log(json);
-// };
-// lightningData();
+	const makeDates = (isIndex = false, searchDate = "09-30") => {
+		// fill all monsoon dates into array
+		const dates = [];
+		// year doesn't matter in this case
+		let tempDate = new Date("2020-06-15");
+		for (let i = 0; i < 108; i++) {
+			dates.push(tempDate.toISOString().slice(5, 10));
+			// if we want to return the index of the date, check to see if loop matches
+			if (isIndex) {
+				if (tempDate.toISOString().slice(5, 10) === searchDate) {
+					return i;
+				}
+			}
+			tempDate.setDate(tempDate.getDate() + 1);
+		}
+		return dates;
+	};
+
+	const buildDatasetInfoLine = (region) => {
+		console.log(region);
+		const years = Object.keys(ltgData[region]);
+		years.sort().reverse();
+		const tempArrayOfDatasets = [];
+		for (let [i, year] of years.entries()) {
+			const tempObj = {};
+			tempObj.label = year;
+			// bold if avg line
+			if (year === "AVG") {
+				tempObj.backgroundColor = "#333";
+				tempObj.borderColor = "#333";
+				tempObj.borderWidth = 4;
+			} else if (i === 1) {
+				// if most recent year, highlight in bold blue
+				tempObj.backgroundColor = "#3ae";
+				tempObj.borderColor = "#3ae";
+				tempObj.borderWidth = 4;
+				// else gray
+			} else {
+				tempObj.backgroundColor = "#c1c0b9";
+				tempObj.borderColor = "#c1c0b9";
+			}
+			tempObj.hoverBackgroundColor = "#d58";
+			tempObj.hoverBorderColor = "#d58";
+			tempObj.radius = 0;
+			tempObj.hoverRadius = 0;
+			tempObj.data = ltgData[region][year];
+			tempArrayOfDatasets.push(tempObj);
+		}
+		return tempArrayOfDatasets;
+	};
+
+	const buildDatasetInfoBar = (region) => {
+		const years = Object.keys(ltgData[region]);
+		years.sort();
+		let currentDate = new Date();
+		// prevent day from advancing until 5am
+		if (currentDate.getUTCHours() < 12) {
+			currentDate.setUTCDate(currentDate.getUTCDate() - 1);
+		}
+		console.log(years);
+		const toDate = [];
+		const seasonTotal = [];
+		const finalYears = [];
+		const dateIndex = makeDates(true, currentDate.toISOString().slice(5, 10));
+		for (let year of years) {
+			if (year === "AVG") {
+				continue;
+			} else {
+				toDate.push(ltgData[region][year][dateIndex]);
+				seasonTotal.push(ltgData[region][year][107]);
+				finalYears.push(year);
+			}
+		}
+		return {
+			toDate,
+			seasonTotal,
+			finalYears,
+		};
+	};
+
+	const populateLightningRegion = (data) => {
+		const regions = Object.keys(data).sort();
+		for (let region of regions) {
+			if (region !== "Update") {
+				const option = document.createElement("option");
+				option.value = region;
+				option.innerText = avgDewpoints.lightningSitesList[region].name;
+				lightningRegionSelect.append(option);
+			}
+		}
+	};
+
+	const updateChart = (region) => {
+		lightningLine.data.labels = makeDates();
+		lightningLine.data.datasets = buildDatasetInfoLine(region);
+		lightningLine.options.plugins.title.text = `${avgDewpoints.lightningSitesList[region].name} - Total Lightning Strikes`;
+		lightningLine.update();
+		// get obj of data for bar chart, toDate, seasonTotal
+		const barDataObj = buildDatasetInfoBar(region);
+		lightningBar.data.datasets[0].data = barDataObj.toDate;
+		lightningBar.data.datasets[1].data = barDataObj.seasonTotal;
+		lightningBar.data.labels = barDataObj.finalYears;
+		lightningBar.options.plugins.title.text = `${avgDewpoints.lightningSitesList[region].name} - Lightning Strikes to Date/Total`;
+		lightningBar.update();
+	};
+
+	const latestUpdate = () => {
+		const updateTime = new Date(ltgData.Update.slice(0, 10));
+		updateTime.setUTCDate(updateTime.getUTCDate() - 1);
+		console.log(updateTime.toISOString());
+		const dateString = new Intl.DateTimeFormat("en-US", {
+			month: "2-digit",
+			day: "2-digit",
+			year: "numeric",
+			timeZone: "UTC",
+		}).format(updateTime);
+		lastLightningUpdate.innerHTML = `Last Updated:<br><em>${dateString} 5pm</em>`;
+	};
+
+	// initialize the lightning chart, download data, set up regions and draw chart
+	const init = async () => {
+		// const response = await fetch("https://weather.gov/source/psr/LightningTracker/NLDN/ltg.json");
+		// have to use local file for development because of CORS
+		const response = await fetch("./monsoon/ltg2.json");
+		const json = await response.json();
+		ltgData = json;
+		populateLightningRegion(json);
+		updateChart("AZ");
+		latestUpdate();
+	};
+
+	return { init, updateChart };
+})();
+
+lightningRegionSelect.addEventListener("change", (e) => {
+	lightningControls.updateChart(e.target.value);
+});
+
+lightningControls.init();
+
+const lightningLine = new Chart(lightningLineChart, {
+	type: "line",
+	data: {
+		labels: [],
+		datasets: [],
+	},
+	// Configuration options go here
+	options: {
+		interaction: {
+			mode: "nearest",
+			intersect: false,
+		},
+		hover: {
+			mode: "dataset",
+		},
+		maintainAspectRatio: false,
+		plugins: {
+			legend: {
+				display: false,
+			},
+			zoom: {
+				pan: {
+					enabled: true,
+					mode: "x",
+					modifierKey: "alt",
+				},
+				limits: {
+					x: {
+						minRange: 10,
+					},
+				},
+				zoom: {
+					mode: "x",
+					drag: {
+						enabled: true,
+					},
+					wheel: {
+						enabled: true,
+						modifierKey: "ctrl",
+					},
+				},
+			},
+			title: {
+				display: true,
+				text: `AZ Lightning Strikes`,
+				font: {
+					size: 22,
+				},
+			},
+		},
+		// scales: {
+		//   yAxes: [
+		//     {
+		//       scaleLabel: {
+		//         display: true,
+		//         labelString: "Number of Strikes",
+		//         fontSize: 14
+		//       },
+		//       // offset: true,
+		//       ticks: {
+		//         precision: 2,
+		//         beginAtZero: true
+		//       }
+		//     }
+		//   ]
+		// }
+	},
+});
+
+const lightningBar = new Chart(lightningBarChart, {
+	type: "bar",
+	data: {
+		labels: [2019, 2020, 2021, 2022],
+		datasets: [
+			{
+				label: "To Date",
+				backgroundColor: "#3ae",
+				borderColor: "#3ae",
+				data: [],
+			},
+			{
+				label: "Season Total",
+				barPercentage: 0.5,
+				backgroundColor: "#c1c0b9",
+				borderColor: "#c1c0b9",
+				data: [],
+			},
+		],
+	},
+	// Configuration options go here
+	plugins: [plugin],
+	options: {
+		maintainAspectRatio: false,
+		scales: {
+			x: {
+				stacked: true,
+			},
+		},
+		plugins: {
+			// legend: {
+			// 	display: false,
+			// },
+			title: {
+				display: true,
+				text: `Lightning Strikes`,
+				font: {
+					size: 22,
+				},
+			},
+		},
+	},
+});
