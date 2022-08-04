@@ -119,6 +119,19 @@ const plugin = {
 	},
 };
 
+// makes background canvas white instead of transparent
+const plugin2 = {
+	id: "custom_canvas_background_color",
+	beforeDraw: (chart) => {
+		const { ctx } = chart;
+		ctx.save();
+		ctx.globalCompositeOperation = "destination-over";
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, chart.width, chart.height);
+		ctx.restore();
+	},
+};
+
 // instantiate dewpoint chart
 const dewpointChart = new Chart(ctx, {
 	type: "line",
@@ -142,7 +155,7 @@ const dewpointChart = new Chart(ctx, {
 			},
 		],
 	},
-	plugins: [plugin],
+	plugins: [plugin, plugin2],
 	options: {
 		maintainAspectRatio: false,
 		plugins: {
@@ -675,7 +688,7 @@ const buildBarChart = new Chart(barChart, {
 			},
 		],
 	},
-	plugins: [plugin],
+	plugins: [plugin, plugin2],
 	// Configuration options go here
 	options: {
 		maintainAspectRatio: false,
@@ -733,8 +746,7 @@ const buildLineChart = new Chart(lineChart, {
 			},
 		],
 	},
-
-	// Configuration options go here
+	plugins: [plugin2],
 	options: {
 		maintainAspectRatio: false,
 		plugins: {
@@ -1021,7 +1033,7 @@ const lightningLine = new Chart(lightningLineChart, {
 		labels: [],
 		datasets: [],
 	},
-	// Configuration options go here
+	plugins: [plugin2],
 	options: {
 		interaction: {
 			mode: "nearest",
@@ -1109,7 +1121,7 @@ const lightningBar = new Chart(lightningBarChart, {
 			{
 				type: "line",
 				label: "To Date Avg",
-				data: [300000, 300000, 300000, 300000],
+				data: [],
 				backgroundColor: "rgba(255, 255, 255, 0.0)",
 				borderColor: "#3ae",
 				order: 1,
@@ -1120,7 +1132,7 @@ const lightningBar = new Chart(lightningBarChart, {
 			{
 				type: "line",
 				label: "Season Total Avg",
-				data: [500000, 500000, 500000, 500000],
+				data: [],
 				backgroundColor: "rgba(255, 255, 255, 0.0)",
 				borderColor: "#c1c0b9",
 				order: 1,
@@ -1130,8 +1142,7 @@ const lightningBar = new Chart(lightningBarChart, {
 			},
 		],
 	},
-	// Configuration options go here
-	plugins: [plugin],
+	plugins: [plugin, plugin2],
 	options: {
 		maintainAspectRatio: false,
 		scales: {
