@@ -30,6 +30,8 @@ const lightningRegionSelect = document.querySelector("#lightningRegionSelect");
 const lightningLineChart = document.getElementById("lightningLineChart").getContext("2d");
 const lightningBarChart = document.getElementById("lightningBarChart").getContext("2d");
 const lastLightningUpdate = document.querySelector("#lastLightningUpdate");
+const lightningRegionsImage = document.querySelector("#lightningRegionsImage");
+const lightningRegionsLink = document.querySelector("#lightningRegionsLink");
 
 // get host url for dev or prod routing
 const fileRouting = (() => {
@@ -907,6 +909,8 @@ const lightningControls = (() => {
 			currentDate.setUTCDate(currentDate.getUTCDate() - 1);
 		}
 		console.log(years);
+		const avgToDate = [];
+		const avgSeasonTotal = [];
 		const toDate = [];
 		const seasonTotal = [];
 		const finalYears = [];
@@ -915,28 +919,46 @@ const lightningControls = (() => {
 			if (year === "AVG") {
 				continue;
 			} else {
+				avgToDate.push(ltgData[region]["AVG"][dateIndex]);
+				avgSeasonTotal.push(ltgData[region]["AVG"][107]);
 				toDate.push(ltgData[region][year][dateIndex]);
 				seasonTotal.push(ltgData[region][year][107]);
 				finalYears.push(year);
 			}
 		}
 		return {
+			avgToDate,
+			avgSeasonTotal,
 			toDate,
 			seasonTotal,
 			finalYears,
 		};
 	};
 
+	// create option groups for each region, sort and append options to each
 	const populateLightningRegion = (data) => {
+		const optGroupState = document.createElement("optgroup");
+		optGroupState.label = "State";
+		const optGroupMetro = document.createElement("optgroup");
+		optGroupMetro.label = "City/Metro";
+		const optGroupCounty = document.createElement("optgroup");
+		optGroupCounty.label = "County";
 		const regions = Object.keys(data).sort();
 		for (let region of regions) {
 			if (region !== "Update") {
 				const option = document.createElement("option");
 				option.value = region;
 				option.innerText = avgDewpoints.lightningSitesList[region].name;
-				lightningRegionSelect.append(option);
+				if (region === "AZ") {
+					optGroupState.append(option);
+				} else if (region === "Phoenix" || region === "Tucson") {
+					optGroupMetro.append(option);
+				} else {
+					optGroupCounty.append(option);
+				}
 			}
 		}
+		lightningRegionSelect.append(optGroupState, optGroupMetro, optGroupCounty);
 	};
 
 	const updateChart = (region) => {
@@ -948,6 +970,8 @@ const lightningControls = (() => {
 		const barDataObj = buildDatasetInfoBar(region);
 		lightningBar.data.datasets[0].data = barDataObj.toDate;
 		lightningBar.data.datasets[1].data = barDataObj.seasonTotal;
+		lightningBar.data.datasets[2].data = barDataObj.avgToDate;
+		lightningBar.data.datasets[3].data = barDataObj.avgSeasonTotal;
 		lightningBar.data.labels = barDataObj.finalYears;
 		lightningBar.options.plugins.title.text = `${avgDewpoints.lightningSitesList[region].name} - Lightning Strikes to Date/Total`;
 		lightningBar.update();
@@ -986,6 +1010,10 @@ lightningRegionSelect.addEventListener("change", (e) => {
 });
 
 lightningControls.init();
+
+lightningRegionsLink.addEventListener("click", () => {
+	lightningRegionsImage.classList.toggle("d-none");
+});
 
 const lightningLine = new Chart(lightningLineChart, {
 	type: "line",
@@ -1059,20 +1087,46 @@ const lightningLine = new Chart(lightningLineChart, {
 const lightningBar = new Chart(lightningBarChart, {
 	type: "bar",
 	data: {
-		labels: [2019, 2020, 2021, 2022],
+		labels: [],
 		datasets: [
 			{
+				type: "bar",
 				label: "To Date",
 				backgroundColor: "#3ae",
 				borderColor: "#3ae",
 				data: [],
+				order: 3,
 			},
 			{
+				type: "bar",
 				label: "Season Total",
 				barPercentage: 0.5,
 				backgroundColor: "#c1c0b9",
 				borderColor: "#c1c0b9",
 				data: [],
+				order: 3,
+			},
+			{
+				type: "line",
+				label: "To Date Avg",
+				data: [300000, 300000, 300000, 300000],
+				backgroundColor: "rgba(255, 255, 255, 0.0)",
+				borderColor: "#3ae",
+				order: 1,
+				pointRadius: 0,
+				borderWidth: 2,
+				borderDash: [4, 5],
+			},
+			{
+				type: "line",
+				label: "Season Total Avg",
+				data: [500000, 500000, 500000, 500000],
+				backgroundColor: "rgba(255, 255, 255, 0.0)",
+				borderColor: "#c1c0b9",
+				order: 1,
+				pointRadius: 0,
+				borderWidth: 2,
+				borderDash: [4, 5],
 			},
 		],
 	},
@@ -1089,6 +1143,28 @@ const lightningBar = new Chart(lightningBarChart, {
 			// legend: {
 			// 	display: false,
 			// },
+			zoom: {
+				pan: {
+					enabled: true,
+					mode: "x",
+					modifierKey: "alt",
+				},
+				limits: {
+					x: {
+						minRange: 10,
+					},
+				},
+				zoom: {
+					mode: "x",
+					drag: {
+						enabled: true,
+					},
+					wheel: {
+						enabled: true,
+						modifierKey: "ctrl",
+					},
+				},
+			},
 			title: {
 				display: true,
 				text: `Lightning Strikes`,

@@ -99,6 +99,12 @@
 					</div>
 
 					<!-- Lightning Charts -->
+					<p><b>Lightning Chart Information:</b></p>
+					<p>
+						These charts show the number of lightning strikes in the selected region. The bar chart
+						displays total strikes to date for each year, as well as the total for the entire season
+						ending September 30th. The charts are updated around 5pm daily. ***Data source: NLDN***
+					</p>
 					<div id="lightning-chart">
 						<div class="card">
 							<div class="chart-container-2">
@@ -113,6 +119,19 @@
 								<div>Select Region:</div>
 								<select name="lightningRegionSelect" id="lightningRegionSelect"></select>
 							</div>
+							<!-- <br />
+							<div>
+								<div>Line Chart:</div>
+								<label>
+									<input
+										type="checkbox"
+										name="lightningYearsCheckbox"
+										id="lightningYearsCheckbox"
+									/>
+									Select years to display
+								</label>
+								<select name="lightningYearsSelect" id="lightningYearsSelect"></select>
+							</div> -->
 							<div class="chart-controls">
 								<p>Readout:</p>
 								<p><em>Hover Over Chart</em></p>
@@ -127,7 +146,16 @@
 								<p>Pan:</p>
 								<p><em>ALT + Left-Click & Drag</em></p>
 								<br />
-								<p>Information:</p>
+								<p>
+									<a href="javascript:void(0);" id="lightningRegionsLink">Show/Hide Region Map</a>
+								</p>
+								<img
+									class="d-none"
+									src="./monsoon/lightning_regions.png"
+									alt="lightning regions"
+									id="lightningRegionsImage"
+								/>
+								<!-- <p>Information:</p>
 								<p>
 									<em
 										>These charts show the number of lightning strikes in the selected region. The
@@ -136,6 +164,8 @@
 										daily.</em
 									>
 								</p>
+								<br />
+								<p>Data Source:<br /><em>NLDN</em></p> -->
 							</div>
 						</div>
 					</div>
