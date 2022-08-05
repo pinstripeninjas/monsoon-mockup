@@ -1023,9 +1023,13 @@ const lightningControls = (() => {
 
 	// initialize the lightning chart, download data, set up regions and draw chart
 	const init = async () => {
-		// const response = await fetch("https://weather.gov/source/psr/LightningTracker/NLDN/ltg.json");
+		// const response = await fetch("https://weather.gov/source/psr/LightningTracker/NLDN/ltg.json", {
+		// 	method: "GET",
+		// 	mode: "cors",
+		// });
 		// have to use local file for development because of CORS
-		const response = await fetch("./monsoon/ltg2.json");
+		// const response = await fetch("./monsoon/ltg2.json");
+		const response = await fetch("..source/twc/monsoon/ltg2.json");
 		const json = await response.json();
 		ltgData = json;
 		populateLightningRegion(json);
