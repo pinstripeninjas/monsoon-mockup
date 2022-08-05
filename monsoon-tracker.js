@@ -880,7 +880,7 @@ const lightningControls = (() => {
 	};
 
 	const buildDatasetInfoLine = (region) => {
-		console.log(region);
+		console.log(ltgData);
 		const years = Object.keys(ltgData[region]);
 		years.sort().reverse();
 		const tempArrayOfDatasets = [];
@@ -892,21 +892,41 @@ const lightningControls = (() => {
 				tempObj.backgroundColor = "#333";
 				tempObj.borderColor = "#333";
 				tempObj.borderWidth = 4;
+				tempObj.pointRadius = 0;
+				tempObj.pointHoverRadius = 0;
+				tempObj.order = 1;
+				tempObj.data = ltgData[region][year];
 			} else if (i === 1) {
 				// if most recent year, highlight in bold blue
+				tempObj.order = 0;
 				tempObj.backgroundColor = "#3ae";
 				tempObj.borderColor = "#3ae";
 				tempObj.borderWidth = 4;
+				tempObj.hoverBorderWidth = 4;
+				// only use up to most recent day and make last point a big dot
+				tempObj.data = [];
+				tempObj.pointRadius = [];
+				tempObj.pointHoverRadius = [];
+				// get index for most recent day
+				for (let i = 0; i < makeDates(true, ltgData.Update.slice(5, 10)); i++) {
+					tempObj.data.push(ltgData[region][year][i]);
+					tempObj.pointRadius.push(0);
+					tempObj.pointHoverRadius.push(0);
+				}
+				// make last point a big dot
+				tempObj.pointRadius[tempObj.pointRadius.length - 1] = 5;
+				tempObj.pointHoverRadius[tempObj.pointHoverRadius.length - 1] = 5;
 				// else gray
 			} else {
 				tempObj.backgroundColor = "#c1c0b9";
 				tempObj.borderColor = "#c1c0b9";
+				tempObj.pointRadius = 0;
+				tempObj.pointHoverRadius = 0;
+				tempObj.order = 2;
+				tempObj.data = ltgData[region][year];
 			}
 			tempObj.hoverBackgroundColor = "#d58";
 			tempObj.hoverBorderColor = "#d58";
-			tempObj.radius = 0;
-			tempObj.hoverRadius = 0;
-			tempObj.data = ltgData[region][year];
 			tempArrayOfDatasets.push(tempObj);
 		}
 		return tempArrayOfDatasets;
@@ -920,7 +940,6 @@ const lightningControls = (() => {
 		if (currentDate.getUTCHours() < 12) {
 			currentDate.setUTCDate(currentDate.getUTCDate() - 1);
 		}
-		console.log(years);
 		const avgToDate = [];
 		const avgSeasonTotal = [];
 		const toDate = [];
@@ -1033,7 +1052,7 @@ const lightningLine = new Chart(lightningLineChart, {
 		labels: [],
 		datasets: [],
 	},
-	plugins: [plugin2],
+	plugins: [plugin, plugin2],
 	options: {
 		interaction: {
 			mode: "nearest",
@@ -1045,7 +1064,23 @@ const lightningLine = new Chart(lightningLineChart, {
 		maintainAspectRatio: false,
 		plugins: {
 			legend: {
-				display: false,
+				display: true,
+				labels: {
+					// only show labels for average, current year and all other years
+					filter: (item, ctx) => {
+						console.log(item);
+						if (item.datasetIndex === 0) {
+							item.text = "Average";
+							return item;
+						} else if (item.datasetIndex === 1) {
+							item.text = "Current Year";
+							return item;
+						} else if (item.datasetIndex === 2) {
+							item.text = "Other Years";
+							return item;
+						}
+					},
+				},
 			},
 			zoom: {
 				pan: {
