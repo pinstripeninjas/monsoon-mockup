@@ -65,6 +65,7 @@ fetch(`${fileRouting.getRoot("source", "monsoon")}avg-dewpoints.json`)
 	.then((data) => {
 		avgDewpoints = data;
 		getPrecipData.fetchNew(precipRegion.value);
+		lightningControls.init();
 	});
 
 // change to update displays
@@ -1023,13 +1024,15 @@ const lightningControls = (() => {
 
 	// initialize the lightning chart, download data, set up regions and draw chart
 	const init = async () => {
-		// const response = await fetch("https://weather.gov/source/psr/LightningTracker/NLDN/ltg.json", {
-		// 	method: "GET",
-		// 	mode: "cors",
-		// });
+		const response = await fetch(
+			"https://www.weather.gov/source/psr/LightningTracker/NLDN/ltg.json",
+			{
+				credentials: "include",
+			}
+		);
 		// have to use local file for development because of CORS
 		// const response = await fetch("./monsoon/ltg2.json");
-		const response = await fetch("..source/twc/monsoon/ltg2.json");
+		// const response = await fetch("../source/twc/monsoon/ltg2.json");
 		const json = await response.json();
 		ltgData = json;
 		populateLightningRegion(json);
@@ -1043,8 +1046,6 @@ const lightningControls = (() => {
 lightningRegionSelect.addEventListener("change", (e) => {
 	lightningControls.updateChart(e.target.value);
 });
-
-lightningControls.init();
 
 lightningRegionsLink.addEventListener("click", () => {
 	lightningRegionsImage.classList.toggle("d-none");
