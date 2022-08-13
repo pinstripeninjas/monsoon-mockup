@@ -881,7 +881,6 @@ const lightningControls = (() => {
 	};
 
 	const buildDatasetInfoLine = (region) => {
-		console.log(ltgData);
 		const years = Object.keys(ltgData[region]);
 		years.sort().reverse();
 		const tempArrayOfDatasets = [];
@@ -1073,7 +1072,6 @@ const lightningLine = new Chart(lightningLineChart, {
 				labels: {
 					// only show labels for average, current year and all other years
 					filter: (item, ctx) => {
-						console.log(item);
 						if (item.datasetIndex === 0) {
 							item.text = "Average";
 							return item;
