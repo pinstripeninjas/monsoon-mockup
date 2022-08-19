@@ -4759,6 +4759,9 @@
 		},
 		"Tucson": {
 			"name": "Tucson Metro"
+		},
+		"Flagstaff": {
+			"name": "Flagstaff"
 		}
 	}
 }

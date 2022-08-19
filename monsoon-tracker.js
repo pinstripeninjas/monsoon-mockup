@@ -979,10 +979,17 @@ const lightningControls = (() => {
 			if (region !== "Update") {
 				const option = document.createElement("option");
 				option.value = region;
-				option.innerText = avgDewpoints.lightningSitesList[region].name;
+				// check to see if region exists in the config file, if not, then add name
+				// as the default region name and will be put in counties list
+				if (avgDewpoints.lightningSitesList[region].name) {
+					option.innerText = avgDewpoints.lightningSitesList[region].name;
+				} else {
+					option.innerText = avgDewpoints.lightningSitesList[region];
+				}
+				// now append to option group
 				if (region === "AZ") {
 					optGroupState.append(option);
-				} else if (region === "Phoenix" || region === "Tucson") {
+				} else if (region === "Phoenix" || region === "Tucson" || region === "Flagstaff") {
 					optGroupMetro.append(option);
 				} else {
 					optGroupCounty.append(option);
