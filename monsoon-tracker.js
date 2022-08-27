@@ -220,6 +220,7 @@ function getData() {
 }
 
 function calcDailyAvg(datesArr, valuesArr) {
+	console.log(valuesArr);
 	let finalValuesArr = [];
 	let finalDatesArr = [];
 	// populate all the dates into the array
@@ -248,7 +249,10 @@ function calcDailyAvg(datesArr, valuesArr) {
 	for (const [i, date] of datesArr.entries()) {
 		// if date matches current date, add value to array
 		if (date.substring(0, 10) === currentDate) {
-			currentValuesArr.push(valuesArr[i]);
+			// only add value to array if it is not null/undefined
+			if (valuesArr[i]) {
+				currentValuesArr.push(valuesArr[i]);
+			}
 			if (datesArr.length - 1 === i) {
 				// if last date, calculate avg and set finalvalues
 				calcAvg(date, i);
