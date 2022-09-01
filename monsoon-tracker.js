@@ -1,8 +1,3 @@
-// e56e04d76bad41229d6c0f7076d54d59
-// Things to update at start of year:
-// Top 10 records for wettest/driest - avg-dewpoints.json
-// Add previous year's monthly rainfall and total - avg-dewpoints.json (add to end of array)
-
 const ctx = document.getElementById("myChart").getContext("2d");
 const selectSite = document.querySelector("#selectSite");
 const monsoonEd = document.querySelector("#monsoonEd");
@@ -64,6 +59,7 @@ fetch(`${fileRouting.getRoot("source", "monsoon")}avg-dewpoints.json`)
 	.then((res) => res.json())
 	.then((data) => {
 		avgDewpoints = data;
+		fillPrecipSites();
 		getPrecipData.fetchNew(precipRegion.value);
 		lightningControls.init();
 	});
@@ -89,9 +85,7 @@ function adjustDisplay(selected) {
 		}
 	});
 	if (selected === "monsoonStats") {
-		popTop10("ktus");
-		popTable("ktus");
-		popPor("ktus");
+		newTableController.createTable("ktus");
 	}
 }
 
@@ -220,7 +214,6 @@ function getData() {
 }
 
 function calcDailyAvg(datesArr, valuesArr) {
-	console.log(valuesArr);
 	let finalValuesArr = [];
 	let finalDatesArr = [];
 	// populate all the dates into the array
@@ -281,244 +274,228 @@ function calcDailyAvg(datesArr, valuesArr) {
 
 // click listener for changing site on monsoon stats
 monsoonStatsSite.addEventListener("change", (e) => {
-	popTop10(e.target.value);
-	popTable(e.target.value);
-	popPor(e.target.value);
+	newTableController.createTable(e.target.value);
 });
 
-// populates text and por for selected site
-function popPor(site) {
-	monsoonStatsPor.innerHTML = `<b>Monsoon Statitics for ${
-		monsoonStatsSite.options[monsoonStatsSite.selectedIndex].text
-	} (${avgDewpoints[site].top10.por})</b>`;
-}
-
-// poplate top 10 wettest and driest table
-function popTop10(site) {
-	// clear table
-	precipTop10.innerHTML = "";
-	// create header
-	const tr = document.createElement("tr");
-	const th1 = document.createElement("th");
-	const th2 = document.createElement("th");
-	th1.setAttribute("colspan", "2");
-	th2.setAttribute("colspan", "2");
-	th2.style = "background: #f1bc93";
-	th1.textContent = "Top 10 Wettest Monsoons";
-	th2.textContent = "Top 10 Driest Monsoons";
-	tr.append(th1, th2);
-	precipTop10.append(tr);
-	// loop through to make 5 rows with wettest and driest
-	for (let i = 0; i < 5; i++) {
-		const tr = document.createElement("tr");
-		for (let j = 0; j < 4; j++) {
-			const td = document.createElement("td");
-			let temp;
-			switch (j) {
-				case 0:
-					temp =
-						typeof avgDewpoints[site].top10.wettest.amount[i] === "number"
-							? avgDewpoints[site].top10.wettest.amount[i].toFixed(2)
-							: avgDewpoints[site].top10.wettest.amount[i];
-					td.textContent = `${i + 1}) ${temp}" / ${avgDewpoints[site].top10.wettest.year[i]}`;
-					break;
-				case 1:
-					temp =
-						typeof avgDewpoints[site].top10.wettest.amount[i + 5] === "number"
-							? avgDewpoints[site].top10.wettest.amount[i + 5].toFixed(2)
-							: avgDewpoints[site].top10.wettest.amount[i + 5];
-					td.textContent = `${i + 6}) ${temp}" / ${avgDewpoints[site].top10.wettest.year[i + 5]}`;
-					break;
-				case 2:
-					temp =
-						typeof avgDewpoints[site].top10.driest.amount[i] === "number"
-							? avgDewpoints[site].top10.driest.amount[i].toFixed(2)
-							: avgDewpoints[site].top10.driest.amount[i];
-					td.textContent = `${i + 1}) ${temp}" / ${avgDewpoints[site].top10.driest.year[i]}`;
-					break;
-				case 3:
-					temp =
-						typeof avgDewpoints[site].top10.driest.amount[i + 5] === "number"
-							? avgDewpoints[site].top10.driest.amount[i + 5].toFixed(2)
-							: avgDewpoints[site].top10.driest.amount[i + 5];
-					td.textContent = `${i + 6}) ${temp}" / ${avgDewpoints[site].top10.driest.year[i + 5]}`;
-					break;
-				default:
-					console.log("whoops");
-			}
-			tr.append(td);
-		}
-		precipTop10.append(tr);
-	}
-}
-
-// come back to this later...
-// populate precip tables with xmacis, need to pull June 1-14 and months with parallel fetch
-// async function popTable2(site) {
-// 		const urlBase = "https://data.rcc-acis.org/StnData";
-// 		const elements = {
-// 			sids: site,
-// 			sdate: `${selectedYear}-06-14`,
-// 			edate: `${selectedYear}-06-14`,
-// 			elems: [
-// 				{
-// 					name: "pcpn",
-// 					duration: "std",
-// 					interval: [1, 0, 0],
-// 					seasonStart: [6, 1],
-// 					reduce: {
-// 						add: "mcnt",
-// 						reduce: "sum"
-// 					}
-// 				},
-// 				{
-// 					name: "pcpn",
-// 					duration: "std",
-// 					smry: "sum",
-// 					normal: "1",
-// 				},
-// 			],
-// 		};
-// 	const precipHistory = await fetch();
-// 	const precipData = await precipHistory.json();
-// 	console.log(precipData);
-// }
-
-// populate table with historical precip data
-async function popTable(site) {
-	precipTable.innerHTML = "Loading...";
-	const table = document.createElement("table");
-	// show haywood plot and link?
-	if (site === "ktus") {
-		haywoodLink.classList.remove("d-none");
-		haywoodPlot.classList.remove("d-none");
-		startDates.classList.remove("d-none");
-	} else {
-		haywoodLink.classList.add("d-none");
-		haywoodPlot.classList.add("d-none");
-		startDates.classList.add("d-none");
-	}
-	// loops through precip data
-	for (let [i, cell] of avgDewpoints[site].precip.entries()) {
-		// make new table row if necessary
-		if (i % 6 === 0 || i === 0) {
-			const tr = document.createElement("tr");
-			table.prepend(tr);
-			const td = document.createElement("td");
-			td.textContent = `${cell}`;
-			tr.append(td);
-		} else {
-			const tr = table.firstChild;
-			const td = document.createElement("td");
-			// if number, add inches symbol, else just print T
-			if (typeof cell === "number") {
-				td.textContent = `${cell.toFixed(2)}"`;
-			} else {
-				td.textContent = `${cell}`;
-			}
-			tr.append(td);
-		}
-	}
-	// add current year data
-	const currentYrData = await processXmacis(site);
-	const currentYrTr = document.createElement("tr");
-	const currentYr = document.createElement("td");
-	currentYr.textContent = new Date().getFullYear();
-	currentYrTr.append(currentYr);
-	// loop through and add data from xmacis
-	for (let currentData of currentYrData) {
-		const td = document.createElement("td");
-		td.textContent = `${currentData[1]}"`;
-		currentYrTr.append(td);
-	}
-	table.prepend(currentYrTr);
-	// add header
-	const labels = ["Year", "June (15-30)", "July", "August", "September", "Total"];
-	const headerRow = document.createElement("tr");
-	for (let label of labels) {
-		const th = document.createElement("th");
-		th.textContent = label;
-		headerRow.append(th);
-	}
-	table.prepend(headerRow);
-	precipTable.innerHTML = "";
-	precipTable.append(table);
-}
-
-// make url for retrieving climate precip data
-async function getXmacisData(site, monthly) {
-	const currentYear = new Date().getFullYear();
-	const dates = [];
-	const elems = [
-		{
-			name: "pcpn",
-		},
-	];
-	// check if need monthly or daily summed data
-	if (monthly) {
-		dates.push(`${currentYear}-06`);
-		dates.push(`${currentYear}-09`);
-		elems[0].interval = "mly";
-		elems[0].duration = "mly";
-		elems[0].reduce = {
-			reduce: "sum",
+// controls the monsoon stats tables
+const newTableController = (() => {
+	// pulls monthly data from xmacis api based on given site
+	// starting date is 06-15. It will give a cumulative total with a
+	// readout at the end of every month
+	const getData = async (site) => {
+		const currentYear = new Date().getFullYear();
+		const url = "https://data.rcc-acis.org/StnData";
+		const params = {
+			sid: avgDewpoints[site].xmacisPrecip.id,
+			sdate: "1850-9-30",
+			edate: `${currentYear}-9-30`,
+			meta: "valid_daterange",
+			elems: [
+				{
+					name: "pcpn",
+					interval: [0, 1, 0],
+					duration: "std",
+					season_start: "06-15",
+					reduce: {
+						reduce: "sum",
+					},
+				},
+			],
 		};
-	} else {
-		dates.push(`${currentYear}-06-01`);
-		dates.push(`${currentYear}-06-14`);
-		elems[0].interval = [0, 0, 1];
-		elems[0].duration = 1;
-		elems[0].smry = "sum";
-		elems[0].smry_only = "1";
-	}
-	const url = "https://data.rcc-acis.org/StnData";
-	const params = {
-		sid: site,
-		sdate: dates[0],
-		edate: dates[1],
-		elems: elems,
+		const finalUrl = url + "?params=" + JSON.stringify(params);
+		const response = await fetch(finalUrl);
+		const json = await response.json();
+		return json;
 	};
-	const finalUrl = url + "?params=" + JSON.stringify(params);
-	const res = await fetch(finalUrl);
-	const data = await res.json();
-	// if monthly, will return array of months, which is also array of data and precip total
-	// ['2022-06', '0.00']
-	// otherwise return sum of dates 6-01 to 6-14
-	if (monthly) {
-		for (let value of data.data) {
-			// replace "M" or "T" with 0.00
-			if (value[1] === "M" || value[1] === "T") {
-				value[1] = "0.00";
+
+	const addTableRow = (currentDataObj) => {
+		const tr = document.createElement("tr");
+		for (let title of ["year", "jun", "jul", "aug", "sep", "total"]) {
+			const td = document.createElement("td");
+			const value = Number(currentDataObj[title]);
+			if (title !== "year") {
+				td.textContent = `${value.toFixed(2)}"`;
+			} else {
+				td.textContent = value;
+			}
+			tr.append(td);
+		}
+		return tr;
+	};
+
+	// populates text and por for selected site
+	function popPor(site) {
+		const currentYear = new Date().getFullYear();
+		monsoonStatsPor.innerHTML = `<b>Monsoon Statitics for ${
+			monsoonStatsSite.options[monsoonStatsSite.selectedIndex].text
+		} (${avgDewpoints[site].xmacisPrecip.startYear} - ${currentYear})</b>`;
+	}
+
+	// populates top10 table of wettest and driest monsoons
+	const addTop10Table = (top10array) => {
+		// get wettest and driest into top 10 arrays
+		top10array.sort((a, b) => a.total - b.total);
+		const driest10 = top10array.slice(0, 10);
+		const wettest10 = top10array.slice(-10);
+		wettest10.reverse();
+		// create header
+		const tr = document.createElement("tr");
+		const th1 = document.createElement("th");
+		const th2 = document.createElement("th");
+		th1.setAttribute("colspan", "2");
+		th2.setAttribute("colspan", "2");
+		th2.style = "background: #f1bc93";
+		th1.textContent = "Top 10 Wettest Monsoons";
+		th2.textContent = "Top 10 Driest Monsoons";
+		tr.append(th1, th2);
+		precipTop10.append(tr);
+		// loop through to make 5 rows with wettest and driest
+		// i = rows, j = columns
+		for (let i = 0; i < 5; i++) {
+			const tr = document.createElement("tr");
+			for (let j = 0; j < 4; j++) {
+				const td = document.createElement("td");
+				switch (j) {
+					case 0:
+						td.textContent = `${i + 1}) ${wettest10[i].total.toFixed(2)}" / ${wettest10[i].year}`;
+						break;
+					case 1:
+						td.textContent = `${i + 6}) ${wettest10[i + 5].total.toFixed(2)}" / ${
+							wettest10[i + 5].year
+						}`;
+						break;
+					case 2:
+						td.textContent = `${i + 1}) ${driest10[i].total.toFixed(2)}" / ${driest10[i].year}`;
+						break;
+					case 3:
+						td.textContent = `${i + 6}) ${driest10[i + 5].total.toFixed(2)}" / ${
+							driest10[i + 5].year
+						}`;
+						break;
+					default:
+						console.log("whoops");
+						break;
+				}
+				tr.append(td);
+			}
+			precipTop10.append(tr);
+		}
+	};
+
+	// processes data and adds to table
+	const processData = (json, site) => {
+		const table = precipTable.querySelector("table");
+		const startingYear = avgDewpoints[site].xmacisPrecip.startYear;
+		const monthlyData = json.data;
+		let currentDataObj = {
+			year: 0,
+			jun: 0,
+			jul: 0,
+			aug: 0,
+			sep: 0,
+			total: 0,
+		};
+		const top10array = [];
+		// loop through each month, check the year and find correct monsoon month data
+		for (let monthData of monthlyData) {
+			// is this a new year? if so, reset year and monthArr
+			if (currentDataObj.year !== Number(monthData[0].substring(0, 4))) {
+				currentDataObj.year = Number(monthData[0].substring(0, 4));
+				currentDataObj.jun = 0;
+				currentDataObj.jul = 0;
+				currentDataObj.aug = 0;
+				currentDataObj.sep = 0;
+			}
+			// check the month. Since data has all months of the year and not just the monsoon,
+			// only need the data from these months, then add to currentDataObj
+			if (currentDataObj.year >= startingYear) {
+				switch (monthData[0].substring(5, 7)) {
+					case "06":
+						if (monthData[1] === "T" || monthData[1] === "M") {
+							currentDataObj.jun = 0;
+						} else {
+							currentDataObj.jun = Number(monthData[1]);
+						}
+						break;
+					case "07":
+						if (monthData[1] === "T" || monthData[1] === "M") {
+							currentDataObj.jul = 0;
+						} else {
+							currentDataObj.jul = +(monthData[1] - currentDataObj.jun).toFixed(2);
+						}
+						break;
+					case "08":
+						if (monthData[1] === "T" || monthData[1] === "M") {
+							currentDataObj.aug = 0;
+						} else {
+							currentDataObj.aug = +(
+								monthData[1] -
+								currentDataObj.jul -
+								currentDataObj.jun
+							).toFixed(2);
+						}
+						break;
+					case "09":
+						if (monthData[1] === "T" || monthData[1] === "M") {
+							currentDataObj.sep = 0;
+						} else {
+							currentDataObj.sep = +(
+								monthData[1] -
+								currentDataObj.aug -
+								currentDataObj.jul -
+								currentDataObj.jun
+							).toFixed(2);
+						}
+						currentDataObj.total = monthData[1] === "T" || monthData[1] === "M" ? 0 : +monthData[1];
+						console.log(currentDataObj);
+						// add to top10 array
+						top10array.push({
+							year: currentDataObj.year,
+							total: currentDataObj.total,
+						});
+						// fill table row with data
+						table.prepend(addTableRow(currentDataObj));
+						break;
+					default:
+						break;
+				}
 			}
 		}
-		return data.data;
-	}
-	// "smry": ["0.00"]
-	else {
-		// replace "M" or "T" with 0.00
-		if (data.smry[0] === "M" || data.smry[0] === "T") {
-			data.smry[0] = "0.00";
-		}
-		return data.smry;
-	}
-}
+		// make top 10 wet/dry
+		addTop10Table(top10array);
+	};
 
-async function processXmacis(site) {
-	const monthlyData = getXmacisData(site, true);
-	const dailyData = getXmacisData(site, false);
-	const promiseValues = await Promise.all([monthlyData, dailyData]);
-	// take monthly data and create a final array of values
-	const finalValues = [...promiseValues[0]];
-	// subtract value of
-	finalValues[0][1] = (Number(finalValues[0][1]) - Number(promiseValues[1][0])).toFixed(2);
-	// add total
-	const totalPrecip = finalValues.reduce(
-		(partialSum, currentVal) => partialSum + Number(currentVal[1]),
-		0
-	);
-	finalValues.push(["Total", totalPrecip.toFixed(2)]);
-	return finalValues;
-}
+	// creates header row
+	const makeTableHeader = () => {
+		const tr = document.createElement("tr");
+		for (let title of ["Year", "Jun", "Jul", "Aug", "Sep", "Total"]) {
+			const th = document.createElement("th");
+			th.textContent = title;
+			tr.append(th);
+		}
+		return tr;
+	};
+
+	const createTable = async (site) => {
+		// erase existing table data
+		monsoonStatsPor.innerHTML = "";
+		precipTop10.innerHTML = "";
+		precipTable.innerHTML = "Loading...";
+		const data = await getData(site);
+		// clear loading, then create and append table
+		precipTable.innerHTML = "";
+		const table = document.createElement("table");
+		precipTable.append(table);
+		// process data and add to tables
+		processData(data, site);
+		// append header to table
+		table.prepend(makeTableHeader());
+		// displays the period of record for the site
+		popPor(site);
+	};
+
+	return { createTable };
+})();
 
 // chart for current year precip from old monsoon rainfall page /////////////////////
 const barChart = document.getElementById("barChart").getContext("2d");
@@ -862,7 +839,7 @@ function fillPrecipSites() {
 	}
 }
 
-// populate lightning charts from PSR json file
+// populate lightning charts from PSR json file ///////////////////////
 const lightningControls = (() => {
 	let ltgData = {};
 
@@ -1042,7 +1019,6 @@ const lightningControls = (() => {
 		);
 		// have to use local file for development because of CORS
 		// const response = await fetch("./monsoon/ltg2.json");
-		// const response = await fetch("../source/twc/monsoon/ltg2.json");
 		const json = await response.json();
 		ltgData = json;
 		populateLightningRegion(json);

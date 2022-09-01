@@ -11,7 +11,7 @@
 		<div class="nws-container">
 			<img style="width: 100%" src="./img/nws-header.png" alt="header" />
 			<div id="pagebody">
-				<!-- Here's what actually matters -->
+				<!-- For CMS, copy starting from here -->
 				<link rel="stylesheet" href="./monsoon-tracker.css" />
 				<!-- <link rel="stylesheet" href="../source/twc/monsoon/monsoon-tracker.css" /> -->
 				<nav>
@@ -75,15 +75,7 @@
 							</div>
 							<div>
 								<div class="mt-20">Select Site:</div>
-								<select id="selectSitePrecip">
-									<option selected value="0">Tucson</option>
-									<option value="1">Nogales</option>
-									<option value="2">Safford</option>
-									<option value="3">Sierra Vista</option>
-									<option value="4">Willcox</option>
-									<option value="5">Picacho Peak</option>
-									<option value="6">Ajo</option>
-								</select>
+								<select id="selectSitePrecip"></select>
 							</div>
 							<div>
 								<div class="mt-20">Select Year:</div>
@@ -108,9 +100,22 @@
 						thunderstorm activity. The bar chart displays total strikes to date for each year, as
 						well as the total for the entire season ending September 30th. The charts are updated
 						around 5pm daily. Data source:
-						<a href="https://www.vaisala.com/en/products/national-lightning-detection-network-nldn"
+						<a
+							href="https://www.vaisala.com/en/products/national-lightning-detection-network-nldn"
+							target="_blank"
+							rel="noopener noreferrer"
 							>VAISALA NLDN.</a
 						>
+					</p>
+					<br />
+					<p>
+						Learn more about hourly/daily lightning climatology with
+						<a
+							href="https://www.spc.noaa.gov/climo/dataviewer/"
+							target="_blank"
+							rel="noopener noreferrer"
+							>SPC's Data Viewer</a
+						>.
 					</p>
 					<div id="lightning-chart">
 						<div class="card">
@@ -126,19 +131,6 @@
 								<div>Select Region:</div>
 								<select name="lightningRegionSelect" id="lightningRegionSelect"></select>
 							</div>
-							<!-- <br />
-							<div>
-								<div>Line Chart:</div>
-								<label>
-									<input
-										type="checkbox"
-										name="lightningYearsCheckbox"
-										id="lightningYearsCheckbox"
-									/>
-									Select years to display
-								</label>
-								<select name="lightningYearsSelect" id="lightningYearsSelect"></select>
-							</div> -->
 							<div class="chart-controls">
 								<p>Readout:</p>
 								<p><em>Hover Over Chart</em></p>
@@ -162,17 +154,6 @@
 									alt="lightning regions"
 									id="lightningRegionsImage"
 								/>
-								<!-- <p>Information:</p>
-								<p>
-									<em
-										>These charts show the number of lightning strikes in the selected region. The
-										bar chart displays total strikes to date for each year, as well as the total for
-										the entire season ending September 30th. The charts are updated around 5pm
-										daily.</em
-									>
-								</p>
-								<br />
-								<p>Data Source:<br /><em>NLDN</em></p> -->
 							</div>
 						</div>
 					</div>
@@ -440,5 +421,6 @@
 		></script>
 		<script src="./monsoon-tracker.js"></script>
 		<!-- <script src="../source/twc/monsoon/monsoon-tracker.js"></script> -->
+		<!-- End of CMS copy -->
 	</body>
 </html>
