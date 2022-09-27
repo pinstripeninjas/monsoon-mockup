@@ -282,6 +282,7 @@ const newTableController = (() => {
 	// pulls monthly data from xmacis api based on given site
 	// starting date is 06-15. It will give a cumulative total with a
 	// readout at the end of every month
+	// second element is the normal rainfall amounts for the month
 	const getData = async (site) => {
 		const currentYear = new Date().getFullYear();
 		const url = "https://data.rcc-acis.org/StnData";
@@ -300,19 +301,39 @@ const newTableController = (() => {
 						reduce: "sum",
 					},
 				},
+				{
+					name: "pcpn",
+					interval: [0, 1, 0],
+					duration: "std",
+					season_start: "06-15",
+					reduce: {
+						reduce: "sum",
+					},
+					normal: 1,
+				},
 			],
 		};
 		const finalUrl = url + "?params=" + JSON.stringify(params);
 		const response = await fetch(finalUrl);
 		const json = await response.json();
+		console.log(json);
 		return json;
 	};
 
-	const addTableRow = (currentDataObj) => {
+	const addTableRow = (currentDataObj, isNormal) => {
 		const tr = document.createElement("tr");
+		if (isNormal) {
+			tr.style.backgroundColor = "#FEFDCD";
+			tr.style.fontWeight = 700;
+		}
 		for (let title of ["year", "jun", "jul", "aug", "sep", "total"]) {
+			let value;
 			const td = document.createElement("td");
-			const value = Number(currentDataObj[title]);
+			if (isNormal && title === "year") {
+				value = currentDataObj[title];
+			} else {
+				value = Number(currentDataObj[title]);
+			}
 			if (title !== "year") {
 				td.textContent = `${value.toFixed(2)}"`;
 			} else {
@@ -395,6 +416,14 @@ const newTableController = (() => {
 			sep: 0,
 			total: 0,
 		};
+		let dataNormalsObj = {
+			year: "Normal",
+			jun: 0,
+			jul: 0,
+			aug: 0,
+			sep: 0,
+			total: 0,
+		};
 		const top10array = [];
 		// loop through each month, check the year and find correct monsoon month data
 		for (let monthData of monthlyData) {
@@ -413,31 +442,42 @@ const newTableController = (() => {
 					case "06":
 						if (monthData[1] === "T" || monthData[1] === "M") {
 							currentDataObj.jun = 0;
+							dataNormalsObj.jun = 0;
 						} else {
 							currentDataObj.jun = Number(monthData[1]);
+							dataNormalsObj.jun = Number(monthData[2]);
 						}
 						break;
 					case "07":
 						if (monthData[1] === "T" || monthData[1] === "M") {
 							currentDataObj.jul = 0;
+							dataNormalsObj.jul = 0;
 						} else {
 							currentDataObj.jul = +(monthData[1] - currentDataObj.jun).toFixed(2);
+							dataNormalsObj.jul = +(monthData[2] - dataNormalsObj.jun).toFixed(2);
 						}
 						break;
 					case "08":
 						if (monthData[1] === "T" || monthData[1] === "M") {
 							currentDataObj.aug = 0;
+							dataNormalsObj.aug = 0;
 						} else {
 							currentDataObj.aug = +(
 								monthData[1] -
 								currentDataObj.jul -
 								currentDataObj.jun
 							).toFixed(2);
+							dataNormalsObj.aug = +(
+								monthData[2] -
+								dataNormalsObj.jul -
+								dataNormalsObj.jun
+							).toFixed(2);
 						}
 						break;
 					case "09":
 						if (monthData[1] === "T" || monthData[1] === "M") {
 							currentDataObj.sep = 0;
+							dataNormalsObj.sep = 0;
 						} else {
 							currentDataObj.sep = +(
 								monthData[1] -
@@ -445,22 +485,30 @@ const newTableController = (() => {
 								currentDataObj.jul -
 								currentDataObj.jun
 							).toFixed(2);
+							dataNormalsObj.sep = +(
+								monthData[2] -
+								dataNormalsObj.aug -
+								dataNormalsObj.jul -
+								dataNormalsObj.jun
+							).toFixed(2);
 						}
 						currentDataObj.total = monthData[1] === "T" || monthData[1] === "M" ? 0 : +monthData[1];
-						console.log(currentDataObj);
+						dataNormalsObj.total = monthData[2] === "T" || monthData[2] === "M" ? 0 : +monthData[2];
 						// add to top10 array
 						top10array.push({
 							year: currentDataObj.year,
 							total: currentDataObj.total,
 						});
 						// fill table row with data
-						table.prepend(addTableRow(currentDataObj));
+						table.prepend(addTableRow(currentDataObj, false));
 						break;
 					default:
 						break;
 				}
 			}
 		}
+		// add normals to table
+		table.prepend(addTableRow(dataNormalsObj, true));
 		// make top 10 wet/dry
 		addTop10Table(top10array);
 	};
