@@ -156,7 +156,9 @@ const dewpointChart = new Chart(ctx, {
 		plugins: {
 			title: {
 				display: true,
-				text: `${selectSite.options[selectSite.selectedIndex].text} - Avg Daily Dewpoint Tracker`,
+				text: `${
+					selectSite.options[selectSite.selectedIndex].text
+				} - Avg Daily Dewpoint Tracker`,
 				font: {
 					size: 22,
 				},
@@ -378,7 +380,9 @@ const newTableController = (() => {
 				const td = document.createElement("td");
 				switch (j) {
 					case 0:
-						td.textContent = `${i + 1}) ${wettest10[i].total.toFixed(2)}" / ${wettest10[i].year}`;
+						td.textContent = `${i + 1}) ${wettest10[i].total.toFixed(2)}" / ${
+							wettest10[i].year
+						}`;
 						break;
 					case 1:
 						td.textContent = `${i + 6}) ${wettest10[i + 5].total.toFixed(2)}" / ${
@@ -386,7 +390,9 @@ const newTableController = (() => {
 						}`;
 						break;
 					case 2:
-						td.textContent = `${i + 1}) ${driest10[i].total.toFixed(2)}" / ${driest10[i].year}`;
+						td.textContent = `${i + 1}) ${driest10[i].total.toFixed(2)}" / ${
+							driest10[i].year
+						}`;
 						break;
 					case 3:
 						td.textContent = `${i + 6}) ${driest10[i + 5].total.toFixed(2)}" / ${
@@ -492,8 +498,10 @@ const newTableController = (() => {
 								dataNormalsObj.jun
 							).toFixed(2);
 						}
-						currentDataObj.total = monthData[1] === "T" || monthData[1] === "M" ? 0 : +monthData[1];
-						dataNormalsObj.total = monthData[2] === "T" || monthData[2] === "M" ? 0 : +monthData[2];
+						currentDataObj.total =
+							monthData[1] === "T" || monthData[1] === "M" ? 0 : +monthData[1];
+						dataNormalsObj.total =
+							monthData[2] === "T" || monthData[2] === "M" ? 0 : +monthData[2];
 						// add to top10 array
 						top10array.push({
 							year: currentDataObj.year,
@@ -660,8 +668,14 @@ const dailyPrecip = (site, precipType) => {
 	} else {
 		for (let i = 0; i < getPrecipData.getDates().length; i++) {
 			const currentPrecipAmount = fullPrecipArray[site].data[i][0];
-			if (currentPrecipAmount !== "T" && currentPrecipAmount !== "M") {
-				newPrecipTotal = Number((newPrecipTotal + Number(currentPrecipAmount)).toFixed(2));
+			if (
+				currentPrecipAmount !== "T" &&
+				currentPrecipAmount !== "M" &&
+				currentPrecipAmount !== "S"
+			) {
+				// have to slice because values sometimes attach "A" ie "0.20A"
+				const tempPrecipAmount = currentPrecipAmount.slice(0, 4);
+				newPrecipTotal = Number((newPrecipTotal + Number(tempPrecipAmount)).toFixed(2));
 			}
 			newPrecipArray.push(newPrecipTotal);
 		}
@@ -937,14 +951,15 @@ const lightningControls = (() => {
 				tempObj.pointRadius = [];
 				tempObj.pointHoverRadius = [];
 				// get index for most recent day
-				for (let i = 0; i < makeDates(true, ltgData.Update.slice(5, 10)); i++) {
-					tempObj.data.push(ltgData[region][year][i]);
+				for (let j = 0; j < makeDates(true, ltgData.Update.slice(5, 10)).length; j++) {
+					tempObj.data.push(ltgData[region][year][j]);
 					tempObj.pointRadius.push(0);
 					tempObj.pointHoverRadius.push(0);
 				}
 				// make last point a big dot
 				tempObj.pointRadius[tempObj.pointRadius.length - 1] = 5;
 				tempObj.pointHoverRadius[tempObj.pointHoverRadius.length - 1] = 5;
+				console.log(tempObj);
 				// else gray
 			} else {
 				tempObj.backgroundColor = "#c1c0b9";
@@ -974,7 +989,11 @@ const lightningControls = (() => {
 		const toDate = [];
 		const seasonTotal = [];
 		const finalYears = [];
-		const dateIndex = makeDates(true, currentDate.toISOString().slice(5, 10));
+		// set date index by getting length of date array. If before season start, set index to 0
+		let dateIndex = makeDates(true, currentDate.toISOString().slice(5, 10)).length - 1;
+		if (dateIndex === -1) {
+			dateIndex = 0;
+		}
 		for (let year of years) {
 			if (year === "AVG") {
 				continue;
@@ -986,6 +1005,7 @@ const lightningControls = (() => {
 				finalYears.push(year);
 			}
 		}
+		console.log(seasonTotal);
 		return {
 			avgToDate,
 			avgSeasonTotal,
@@ -1066,7 +1086,7 @@ const lightningControls = (() => {
 			}
 		);
 		// have to use local file for development because of CORS
-		// const response = await fetch("./monsoon/ltg2.json");
+		// const response = await fetch("./monsoon/ltg3.json");
 		const json = await response.json();
 		ltgData = json;
 		populateLightningRegion(json);
