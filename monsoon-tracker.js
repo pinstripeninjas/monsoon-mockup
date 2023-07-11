@@ -318,7 +318,6 @@ const newTableController = (() => {
 		const finalUrl = url + "?params=" + JSON.stringify(params);
 		const response = await fetch(finalUrl);
 		const json = await response.json();
-		console.log(json);
 		return json;
 	};
 
@@ -951,7 +950,7 @@ const lightningControls = (() => {
 				tempObj.pointRadius = [];
 				tempObj.pointHoverRadius = [];
 				// get index for most recent day
-				for (let j = 0; j < makeDates(true, ltgData.Update.slice(5, 10)).length; j++) {
+				for (let j = 0; j < makeDates(true, ltgData.Update.slice(5, 10)); j++) {
 					tempObj.data.push(ltgData[region][year][j]);
 					tempObj.pointRadius.push(0);
 					tempObj.pointHoverRadius.push(0);
@@ -959,7 +958,6 @@ const lightningControls = (() => {
 				// make last point a big dot
 				tempObj.pointRadius[tempObj.pointRadius.length - 1] = 5;
 				tempObj.pointHoverRadius[tempObj.pointHoverRadius.length - 1] = 5;
-				console.log(tempObj);
 				// else gray
 			} else {
 				tempObj.backgroundColor = "#c1c0b9";
@@ -990,7 +988,7 @@ const lightningControls = (() => {
 		const seasonTotal = [];
 		const finalYears = [];
 		// set date index by getting length of date array. If before season start, set index to 0
-		let dateIndex = makeDates(true, currentDate.toISOString().slice(5, 10)).length - 1;
+		let dateIndex = makeDates(true, currentDate.toISOString().slice(5, 10)) - 1;
 		if (dateIndex === -1) {
 			dateIndex = 0;
 		}
@@ -1005,7 +1003,6 @@ const lightningControls = (() => {
 				finalYears.push(year);
 			}
 		}
-		console.log(seasonTotal);
 		return {
 			avgToDate,
 			avgSeasonTotal,
@@ -1067,7 +1064,6 @@ const lightningControls = (() => {
 	const latestUpdate = () => {
 		const updateTime = new Date(ltgData.Update.slice(0, 10));
 		updateTime.setUTCDate(updateTime.getUTCDate() - 1);
-		console.log(updateTime.toISOString());
 		const dateString = new Intl.DateTimeFormat("en-US", {
 			month: "2-digit",
 			day: "2-digit",
@@ -1086,7 +1082,7 @@ const lightningControls = (() => {
 			}
 		);
 		// have to use local file for development because of CORS
-		// const response = await fetch("./monsoon/ltg3.json");
+		// const response = await fetch("./monsoon/ltg4.json");
 		const json = await response.json();
 		ltgData = json;
 		populateLightningRegion(json);
