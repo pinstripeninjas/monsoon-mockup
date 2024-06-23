@@ -1071,6 +1071,30 @@ const lightningControls = (() => {
 			timeZone: "UTC",
 		}).format(updateTime);
 		lastLightningUpdate.innerHTML = `Last Updated:<br><em>${dateString} 5pm</em>`;
+
+		const currentDate = new Date();
+		const currentMonth = currentDate.getMonth() + 1; // months are 0-indexed
+		const currentDay = currentDate.getDate();
+
+		// Check if current date is outside the June 16th to September 30th range
+		if (currentMonth < 6 || (currentMonth === 6 && currentDay < 16) || currentMonth > 9) {
+			// Current date is outside the update range, so skip the timeDiff check
+			return;
+		}
+
+		// Proceed with the timeDiff calculation if within the update range
+		const timeDiff = Math.abs(currentDate - updateTime);
+		const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+		if (diffDays >= 3) {
+			// if data is outdated, we need to display an alert to the user above the chart
+			const alert = document.createElement("div");
+			alert.textContent = "*** Updates to lightning data are temporarily out of service. ***";
+			alert.style.color = "#e22";
+			alert.style.marginTop = "10px";
+			const lightningChart = document.getElementById("lightning-chart");
+			lightningChart.parentNode.insertBefore(alert, lightningChart);
+		}
 	};
 
 	// initialize the lightning chart, download data, set up regions and draw chart
